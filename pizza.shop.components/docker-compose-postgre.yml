@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: pizza-shop-postgres
+    environment:
+      POSTGRES_USER: catalogue_user
+      POSTGRES_PASSWORD: catalogue_password
+      POSTGRES_DB: catalogue_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - pizza-shop-network
+
+networks:
+  pizza-shop-network:
+    driver: bridge

@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: pizza-shop-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password
+      MYSQL_DATABASE: commande_db
+      MYSQL_USER: commande_user
+      MYSQL_PASSWORD: commande_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    networks:
+      - pizza-shop-network
+
+networks:
+  pizza-shop-network:
+    driver: bridge
