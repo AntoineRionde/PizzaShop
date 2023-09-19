@@ -12,6 +12,9 @@ class ServiceCommande implements ICommande
         $this->serviceCatalogue = $serviceCatalogue;
     }
 
+    /**
+     * @throws ServiceCommandeNotFoundException
+     */
     public function readCommande(String $UUID): CommandeDTO
     {
         if($UUID) {
@@ -21,6 +24,9 @@ class ServiceCommande implements ICommande
         }
     }
 
+    /**
+     * @throws ServiceCommandeNotFoundException
+     */
     public function validateCommande(String $UUID): CommandeDTO
     {
         if($UUID) {
