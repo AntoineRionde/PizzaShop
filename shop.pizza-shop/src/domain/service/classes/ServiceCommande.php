@@ -1,9 +1,11 @@
 <?php
 namespace domain\service\classes;
-use domain\service\interfaces\ICommande;
+use domain\dto\CommandeDTO;
+use domain\service\interfaces\ICommander;
+use domain\entities\commande\commande;
 use domain\exception\ServiceCommandeNotFoundException;
 
-class ServiceCommande implements ICommande
+class ServiceCommande implements ICommander
 {
     private ServiceCatalogue $serviceCatalogue;
 
@@ -15,26 +17,26 @@ class ServiceCommande implements ICommande
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function readCommande(String $UUID): CommandeDTO
+    public function readCommande(String $id): CommandeDTO
     {
-        if($UUID) {
-            return new CommandeDTO();
-        }else{
-            throw new ServiceCommandeNotFoundException();
+        try{
+            $commande = commande::find($id);
+            return $commande->toDTO();            
+        }catch(\Exception $e){
+            throw new ServiceCommandeNotFoundException($e->getMessage());
         }
+
+
+        return $commandeDTO;
     }
 
     /**
-     * @throws ServiceCommandeNotFoundException
+     * @throws ServiceCommandeNotFoundExceptioncs
      */
-    public function validateCommande(String $UUID): CommandeDTO
+    public function validateCommande(String $id): CommandeDTO
     {
-        if($UUID) {
-            return new CommandeDTO();
-        }else{
-            throw new ServiceCommandeNotFoundException();
-        }
+        $commandeDTO = new CommandeDTO();
+
+        return $commandeDTO;
     }
-
-
 }
