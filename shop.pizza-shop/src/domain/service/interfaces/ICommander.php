@@ -1,7 +1,7 @@
 <?php
 namespace domain\service\interfaces;
 
-use domain\dto\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\CommandeDTO;
 
 interface ICommander
 {

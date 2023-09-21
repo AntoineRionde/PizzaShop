@@ -1,7 +1,7 @@
 <?php
 
 namespace pizzashop\shop\domain\entities\commande;
-use domain\dto\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\CommandeDTO;
 
 class Commande extends \Illuminate\Database\Eloquent\Model
 {
