@@ -1,4 +1,4 @@
 
 auth.pizza-shop/.DS_Store
-\auth.pizza-shop\vendor\*
-\shop.pizza-shop\vendor\*
+/auth.pizza-shop/vendor/*
+/shop.pizza-shop/vendor/*
