@@ -1,2 +1,4 @@
 
 auth.pizza-shop/.DS_Store
+.idea
+*.xml
