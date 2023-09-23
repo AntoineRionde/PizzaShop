@@ -2,7 +2,9 @@
 
 namespace pizzashop\shop\domain\entities\catalogue;
 
-class Categorie extends \Illuminate\Database\Eloquent\Model
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
 {
 
     protected $connection = 'catalog';
@@ -11,9 +13,9 @@ class Categorie extends \Illuminate\Database\Eloquent\Model
     public $timestamps = false;
     protected $fillable = [ 'libelle'];
 
-    public function produits()
+    public function products()
     {
-        return $this->hasMany(Produit::class, 'categorie_id');
+        return $this->hasMany(Product::class, 'categorie_id');
     }
 
 }

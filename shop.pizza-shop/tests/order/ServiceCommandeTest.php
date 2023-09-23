@@ -1,19 +1,22 @@
 <?php
 
-namespace pizzashop\tests\commande;
+namespace pizzashop\tests\order;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use pizzashop\shop\domain\entities\commande\Commande;
-use pizzashop\shop\domain\entities\commande\Item;
+use pizzashop\shop\domain\entities\order\Order;
+use pizzashop\shop\domain\entities\order\Item;
 use Illuminate\Database\Capsule\Manager as DB;
+use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
+use pizzashop\shop\domain\service\classes\CatalogService;
+use pizzashop\shop\domain\service\commande\ServiceCommande;
 
 class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
-    private static $commandeIds = [];
+    private static $orderIds = [];
     private static $itemIds = [];
-    private static $serviceProduits;
-    private static $serviceCommande;
+    private static $productService;
+    private static $orderService;
     private static $faker;
 
     public static function setUpBeforeClass(): void
@@ -27,8 +30,8 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
         $db->setAsGlobal();
         $db->bootEloquent();
 
-        self::$serviceProduits = new \pizzashop\shop\domain\service\catalogue\ServiceCatalogue();
-        self::$serviceCommande = new \pizzashop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits);
+        self::$productService = new CatalogService();
+        self::$orderService = new OrderService(self::$productService);
         self::$faker = Factory::create('fr_FR');
         self::fill();
 
@@ -42,8 +45,8 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
 
     private static function cleanDB(){
-        foreach (self::$commandeIds as $id){
-            Commande::find($id)->delete();
+        foreach (self::$orderIds as $id){
+            Order::find($id)->delete();
         }
         foreach (self::$itemIds as $id){
             Item::find($id)->delete();
@@ -57,10 +60,10 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
     public function testAccederCommande(){
         //$id = self::$commandeIds[0];
-        foreach (self::$commandeIds as $id){
-            $commandeEntity = Commande::find($id);
-            $commandeDTO = self::$serviceCommande->accederCommande($id);
-            $this->assertNotNull($commandeDTO);
+        foreach (self::$orderIds as $id){
+            $orderEntity = Order::find($id);
+            $orderDTO = self::$orderService->getOrder($id);
+            $this->assertNotNull($orderDTO);
  
             // TODO : comparer les données de l'entité et du DTO
         }

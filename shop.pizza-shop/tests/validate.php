@@ -4,9 +4,9 @@ use Illuminate\Database\Capsule\Manager as DbManager;
 
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\commande\ItemDTO;
-use pizzashop\shop\domain\entities\catalogue\Categorie;
-use pizzashop\shop\domain\entities\catalogue\Taille;
-use pizzashop\shop\domain\entities\catalogue\Produit;
+use pizzashop\shop\domain\entities\catalogue\Category;
+use pizzashop\shop\domain\entities\catalogue\Size;
+use pizzashop\shop\domain\entities\catalogue\Product;
 use Faker\Factory;
 use pizzashop\shop\domain\entities\commande\Commande;
 

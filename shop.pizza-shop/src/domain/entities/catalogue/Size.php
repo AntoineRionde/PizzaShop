@@ -2,11 +2,13 @@
 
 namespace pizzashop\shop\domain\entities\catalogue;
 
-class Taille extends \Illuminate\Database\Eloquent\Model
+use Illuminate\Database\Eloquent\Model;
+
+class Size extends Model
 {
 
-    const NORMALE = 1;
-    const GRANDE = 2;
+    const NORMAL = 1;
+    const TALL = 2;
 	
     protected $connection = 'catalog';
     protected $table = 'taille';
@@ -14,9 +16,9 @@ class Taille extends \Illuminate\Database\Eloquent\Model
     public $timestamps = false;
     protected $fillable = [ 'libelle'];
 
-    public function produits()
+    public function products()
     {
-        return $this->belongsToMany(Produit::class, 'tarif', 'taille_id', 'produit_id');
+        return $this->belongsToMany(Product::class, 'tarif', 'taille_id', 'produit_id');
     }
 
 }

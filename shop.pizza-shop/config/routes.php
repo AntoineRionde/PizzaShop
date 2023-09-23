@@ -1,14 +1,18 @@
 <?php
 declare(strict_types=1);
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use pizzashop\shop\app\actions\AccessOrderAction;
+use pizzashop\shop\app\actions\CreateOrderAction;
+use pizzashop\shop\app\actions\CreateOrderApiAction;
 
 return function( \Slim\App $app):void {
 
-    $app->post('/commandes[/]', \pizzashop\shop\app\actions\CreerCommandeAction::class)
-        ->setName('creer_commande');
+    $app->post('/orders[/]', CreateOrderAction::class)
+        ->setName('create_orders');
 
-    $app->get('/commandes/{id_commande}[/]', \pizzashop\shop\app\actions\AccederCommandeAction::class)
-        ->setName('commande');
+    $app->get('/orders/{id_order}[/]', AccessOrderAction::class)
+        ->setName('order');
+
+    $app->get('/api/create-order[/]', CreateOrderApiAction::class)
+        ->setName('create_order_api');
 };
