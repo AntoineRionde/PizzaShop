@@ -2,3 +2,5 @@
 auth.pizza-shop/.DS_Store
 .idea
 *.xml
+/shop.pizza-shop/vendor/*
+/shop.pizza-shop/composer.lock
