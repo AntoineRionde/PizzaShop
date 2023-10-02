@@ -22,4 +22,9 @@ class Commande extends \Illuminate\Database\Eloquent\Model
         $commandeDTO->mail_client = $this->mail_client;
         return $commandeDTO;
     }
+
+    public function toValidate(){
+
+
+    }
 }
