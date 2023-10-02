@@ -23,8 +23,9 @@ class Commande extends \Illuminate\Database\Eloquent\Model
         return $commandeDTO;
     }
 
-    public function toValidate(){
-
-
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'commande_id', 'id');
     }
+
 }

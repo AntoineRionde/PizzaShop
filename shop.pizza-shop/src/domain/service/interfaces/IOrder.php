@@ -1,7 +1,7 @@
 <?php
 namespace pizzashop\shop\domain\service\interfaces;
 
-use pizzashop\shop\domain\dto\OrderDTO;
+use pizzashop\shop\domain\dto\order\OrderDTO;
 interface IOrder
 {
     public function readOrder(String $id): OrderDTO;

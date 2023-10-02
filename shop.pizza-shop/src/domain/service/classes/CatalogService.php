@@ -12,4 +12,8 @@ class CatalogService implements ICatalog
     {
         $this->orderService = $serviceOrder;
     }
+
+    public function getProductInfo($id) {
+
+    }
 }
