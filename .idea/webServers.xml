@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7b181103-0f52-4cf3-95af-be540ed3d634" name="docketu">
+        <fileTransfer accessType="SFTP" host="docketu.iutnc.univ-lorraine.fr" port="22" sshConfigId="62607d16-52c9-4d36-9501-c7702f9a5e9d" sshConfig="flageoll6u@docketu.iutnc.univ-lorraine.fr:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

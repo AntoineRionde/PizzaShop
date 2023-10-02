@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="docketu.iutnc.univ-lorraine.fr" id="62607d16-52c9-4d36-9501-c7702f9a5e9d" port="22" nameFormat="DESCRIPTIVE" username="flageoll6u" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
