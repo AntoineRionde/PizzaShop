@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use Illuminate\Database\Capsule\Manager as DB;
-use pizzashop\shop\domain\dto\commande\CommandeDTO;
-use pizzashop\shop\domain\dto\commande\ItemDTO;
+use pizzashop\shop\domain\dto\order\OrderDTO;
+use pizzashop\shop\domain\dto\order\ItemDTO;
 use pizzashop\shop\domain\entities\catalogue\Category;
 use pizzashop\shop\domain\entities\catalogue\Size;
 use pizzashop\shop\domain\entities\catalogue\Product;

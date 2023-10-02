@@ -1,7 +1,7 @@
 <?php
 
 namespace pizzashop\shop\domain\entities\commande;
-use pizzashop\shop\domain\dto\commande\CommandeDTO;
+use pizzashop\shop\domain\dto\order\OrderDTO;
 
 class Commande extends \Illuminate\Database\Eloquent\Model
 {
@@ -13,7 +13,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     public $fillable = ['id', 'date_commande', 'type_livraison','etat', 'montant_total', 'mail_client'];
 
     public function toDTO(){
-        $commandeDTO = new CommandeDTO();
+        $commandeDTO = new OrderDTO();
         $commandeDTO->id = $this->id;
         $commandeDTO->date_commande = $this->date_commande;
         $commandeDTO->type_livraison = $this->type_livraison;

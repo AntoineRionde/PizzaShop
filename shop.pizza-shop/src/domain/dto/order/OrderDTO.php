@@ -1,8 +1,8 @@
 <?php
 
-namespace pizzashop\shop\domain\dto\commande;
+namespace pizzashop\shop\domain\dto\order;
 
-class CommandeDTO
+class OrderDTO
 {
 
         public int $id;
