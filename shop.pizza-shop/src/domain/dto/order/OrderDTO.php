@@ -25,5 +25,18 @@ class OrderDTO
         $this->items = $items;
     }
 
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'date_commande' => $this->date_commande,
+            'type_livraison' => $this->type_livraison,
+            'etat' => $this->etat,
+            'montant_total' => $this->montant_total,
+            'mail_client' => $this->mail_client,
+            'items' => $this->items
+        ];
+    }
+
 
 }
