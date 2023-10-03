@@ -3,6 +3,7 @@
 namespace pizzashop\shop\app\actions;
 
 use Exception;
+use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\classes\OrderService;
 
 class ValidateOrderApiAction
@@ -17,6 +18,9 @@ class ValidateOrderApiAction
     public function __invoke($request, $response, $args)
     {
         try {
+            if ($request->getParsedBody()['etat'] != 'validate') {
+                throw new OrderRequestInvalidException();
+            }
             $this->os->validateOrder($args['id_order']);
             $response->getBody()->write(json_encode(['message' => 'Order validated']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);

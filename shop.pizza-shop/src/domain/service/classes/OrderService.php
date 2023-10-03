@@ -19,16 +19,15 @@ class OrderService implements IOrder
         try {
             $commandeEntity = Order::findOrFail($id);
 
-            $itemsEntity = Item::where('id', '=' ,$id);
+            $itemsEntity = Item::where('commande_id', '=' ,$id)->get();
             $arrayItm = array();
             $i = 0;
             foreach($itemsEntity as $itemEntity) {
-                $arrayItm[$i] =  $itemEntity->itmToDTO();
+                $arrayItm[$i] =  $itemEntity->itemToDTO();
                 $i++;
             }
 
             $commandeEntity->items = $arrayItm;
-
 
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
