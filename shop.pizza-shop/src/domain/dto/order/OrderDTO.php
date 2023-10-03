@@ -21,6 +21,7 @@ class OrderDTO
             $this->etat = $etat;
             $this->montant_total = $montant_total;
             $this->mail_client = $mail_client;
+            $this->items = [];
         }
 
 

@@ -2,6 +2,7 @@
 namespace pizzashop\shop\domain\service\classes;
 use Exception;
 use pizzashop\shop\domain\dto\order\OrderDTO;
+use pizzashop\shop\domain\entities\order\Item;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\service\interfaces\IOrder;
 use pizzashop\shop\domain\entities\order\Order;
@@ -17,6 +18,18 @@ class OrderService implements IOrder
     {
         try {
             $commandeEntity = Order::findOrFail($id);
+
+            $itemsEntity = Item::where('id', '=' ,$id);
+            $arrayItm = array();
+            $i = 0;
+            foreach($itemsEntity as $itemEntity) {
+                $arrayItm[$i] =  $itemEntity->itmToDTO();
+                $i++;
+            }
+
+            $commandeEntity->items = $arrayItm;
+
+
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
             throw new OrderNotFoundException();
@@ -42,12 +55,33 @@ class OrderService implements IOrder
     {
         try{
 
-            // liste des items commandés (pour chacun, numéro, taille, quantité).
+
+            //commande : identifiant du client (mail), type de livraison choisie, liste des items commandés (pour
+            //chacun, numéro, taille, quantité).
             //La méthode interroge le service Catalogue pour obtenir des informations sur chaque produit
             //commandé.
-            //La commande est créée : un identifiant est créé, la date de commande est enregistrée,
+            //La commande est créée : un identifiant est créé, la date de commande est enregistrée, l'état initial
+            //de la commande est CREE.
             //Le montant total de la commande est calculé.
-            //Un objet de type CommandeDTO est retourné, incluant toutes les informations disponibles
+            //Un objet de type CommandeDTO est retourné, incluant toutes les informations disponibles.
+
+            $commande = new Commande();
+            $commande->id = $orderDTO->id;
+            $commande->mail_client = $orderDTO->mail_client;
+            $commande->type_livraison = $orderDTO->type_livraison;
+
+            $itemsEntity = Item::where('id', '=' ,$orderDTO->id);
+            $arrayItm = array();
+            $i = 0;
+            foreach($itemsEntity as $itemEntity) {
+                $arrayItm[$i] =  $itemEntity->itmToDTO();
+                $i++;
+            }
+
+
+
+
+
 
 
 

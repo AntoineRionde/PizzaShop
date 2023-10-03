@@ -17,4 +17,8 @@ class Item extends Model
     {
         return $this->belongsTo(Order::class, 'commande_id', 'id');
     }
+
+    public function itmToDTO(){
+        return new ItemDTO($this->id, $this->numero, $this->libelle, $this->taille, $this->libelle_taille, $this->tarif, $this->quantite, $this->commande_id);
+    }
 }
