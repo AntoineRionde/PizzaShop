@@ -13,13 +13,12 @@ class OrderService implements IOrder
     /**
      * @throws OrderNotFoundException
      */
-    public function readOrder(String $id): OrderDTO
+    public function readOrder(string $id): OrderDTO
     {
         try {
             $commandeEntity = Order::findOrFail($id);
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
-            echo $id;
             throw new OrderNotFoundException();
         }
     }

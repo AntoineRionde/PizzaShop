@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
 
-    protected $connection = 'pizza_shop';
+    protected $connection = 'item';
     protected $table = 'item';
     protected $primaryKey = 'id';
     public $timestamps = false;

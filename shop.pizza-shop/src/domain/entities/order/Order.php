@@ -7,21 +7,16 @@ use pizzashop\shop\domain\dto\order\OrderDTO;
 class Order extends Model
 {
 
-    protected $connection = 'pizza_shop';
+    protected $connection = 'commande';
     protected $table = 'commande';
     protected $primaryKey = 'id';
+    public $keyType = 'string';
+
     public $timestamps = false;  
     public $fillable = ['id', 'date_commande', 'type_livraison','etat', 'montant_total', 'mail_client'];
 
     public function toDTO(){
-        $commandeDTO = new OrderDTO();
-        $commandeDTO->id = $this->id;
-        $commandeDTO->date_commande = $this->date_commande;
-        $commandeDTO->type_livraison = $this->type_livraison;
-        $commandeDTO->etat = $this->etat;
-        $commandeDTO->montant_total = $this->montant_total;
-        $commandeDTO->mail_client = $this->mail_client;
-        return $commandeDTO;
+        return new OrderDTO($this->id, $this->date_commande, $this->type_livraison, $this->etat, $this->montant_total, $this->mail_client);
     }
 
     public function items()
