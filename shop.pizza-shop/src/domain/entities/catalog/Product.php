@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\catalogue;
+namespace pizzashop\shop\domain\entities\catalog;
 
 use Illuminate\database\eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

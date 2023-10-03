@@ -3,11 +3,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Illuminate\Database\Capsule\Manager as DB;
 use pizzashop\shop\domain\dto\order\OrderDTO;
 use pizzashop\shop\domain\dto\order\ItemDTO;
-use pizzashop\shop\domain\entities\catalogue\Category;
-use pizzashop\shop\domain\entities\catalogue\Size;
-use pizzashop\shop\domain\entities\catalogue\Product;
+use pizzashop\shop\domain\entities\catalog\Category;
+use pizzashop\shop\domain\entities\catalog\Size;
+use pizzashop\shop\domain\entities\catalog\Product;
 use Faker\Factory;
-use pizzashop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\order\Order;
 
 $dbcom = __DIR__ . '/../config/commande.db.ini';
 $dbcat = __DIR__ . '/../config/catalog.db.ini';

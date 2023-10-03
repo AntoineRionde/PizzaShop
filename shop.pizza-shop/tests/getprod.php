@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 use Illuminate\Database\Capsule\Manager as DB;
-use pizzashop\shop\domain\entities\catalogue\Category;
-use pizzashop\shop\domain\entities\catalogue\Size;
-use pizzashop\shop\domain\entities\catalogue\Product;
+use pizzashop\shop\domain\entities\catalog\Category;
+use pizzashop\shop\domain\entities\catalog\Size;
+use pizzashop\shop\domain\entities\catalog\Product;
 
 $dbconf = __DIR__ . '/../config/catalog.db.ini';
 $db = new DB();

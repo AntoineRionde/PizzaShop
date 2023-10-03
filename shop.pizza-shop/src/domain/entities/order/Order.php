@@ -1,9 +1,10 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\commande;
+namespace pizzashop\shop\domain\entities\order;
+use Illuminate\Database\Eloquent\Model;
 use pizzashop\shop\domain\dto\order\OrderDTO;
 
-class Commande extends \Illuminate\Database\Eloquent\Model
+class Order extends Model
 {
 
     protected $connection = 'pizza_shop';

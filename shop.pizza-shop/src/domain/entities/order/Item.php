@@ -1,8 +1,10 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\commande;
+namespace pizzashop\shop\domain\entities\order;
 
-class Item extends \Illuminate\Database\Eloquent\Model
+use Illuminate\Database\Eloquent\Model;
+
+class Item extends Model
 {
 
     protected $connection = 'pizza_shop';
@@ -13,6 +15,6 @@ class Item extends \Illuminate\Database\Eloquent\Model
 
     public function commande()
     {
-        return $this->belongsTo(Commande::class, 'commande_id', 'id');
+        return $this->belongsTo(Order::class, 'commande_id', 'id');
     }
 }

@@ -1,21 +1,24 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\catalogue;
+namespace pizzashop\shop\domain\entities\catalog;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Size extends Model
 {
 
+    const NORMAL = 1;
+    const TALL = 2;
+	
     protected $connection = 'catalog';
-    protected $table = 'categorie';
+    protected $table = 'taille';
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [ 'libelle'];
 
     public function products()
     {
-        return $this->hasMany(Product::class, 'categorie_id');
+        return $this->belongsToMany(Product::class, 'tarif', 'taille_id', 'produit_id');
     }
 
 }
