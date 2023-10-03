@@ -8,9 +8,9 @@ class CatalogService implements ICatalog
 {
     private OrderService $orderService;
 
-    public function __construct(OrderService $serviceOrder)
+    public function __construct(OrderService $orderService)
     {
-        $this->orderService = $serviceOrder;
+        $this->orderService = $orderService;
     }
 
     public function getProductInfo($id) {

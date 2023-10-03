@@ -2,38 +2,39 @@
 namespace pizzashop\shop\domain\service\classes;
 use Exception;
 use pizzashop\shop\domain\dto\order\OrderDTO;
-use pizzashop\shop\domain\exception\OrderServiceNotFoundException;
+use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\service\interfaces\IOrder;
-use pizzashop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\order\Order;
 
 class OrderService implements IOrder
 {
     private CatalogService $catalogService;
 
     /**
-     * @throws OrderServiceNotFoundException
+     * @throws OrderNotFoundException
      */
     public function readOrder(String $id): OrderDTO
     {
         try {
-            $commandeEntity = Commande::findOrFail($id);
+            $commandeEntity = Order::findOrFail($id);
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
-            throw new OrderServiceNotFoundException();
+            echo $id;
+            throw new OrderNotFoundException();
         }
     }
 
     /**
-     * @throws OrderServiceNotFoundException
+     * @throws OrderNotFoundException
      */
     public function validateCommande(String $id): OrderDTO
     {
         try {
-            $commandeEntity = Commande::findOrFail($id);
+            $commandeEntity = Order::findOrFail($id);
             $commandeEntity->etatCreation = "VALIDE";
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
-            throw new OrderServiceNotFoundException();
+            throw new OrderNotFoundException();
         }
     }
 
@@ -54,7 +55,7 @@ class OrderService implements IOrder
 
 
         }catch(Exception $e){
-            throw new OrderServiceNotFoundException();
+            throw new OrderNotFoundException();
         }
     }
 
