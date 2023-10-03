@@ -10,8 +10,8 @@ services:
     image: 'canals/php:latest'
     env_file: ./shop.env
     ports:
-      - '2080:80'
-      - '1443:443'
+      - '40501:80'
+      - '40502:443'
     volumes:
       - ../shop.pizza-shop/public:/var/www/html
       - ../shop.pizza-shop:/var/www
@@ -33,7 +33,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     env_file: ./shop.env
     ports:
-      - '3307:3306'
+      - '40503:3306'
     networks:
       - pizza-shop.net
     volumes:
@@ -45,7 +45,7 @@ services:
     image: 'postgres:latest'
     env_file: ./cat.env
     ports:
-      - '5432:5432'
+      - '40504:5432'
     networks:
       - pizza-shop.net
     volumes:
@@ -55,8 +55,9 @@ services:
   #
   adminer:
     image: adminer
+    command: php -S 0.0.0.0:8080 -t /var/www/html
     ports:
-      - '8080:8080'
+      - '40510:8080'
     networks:
       - pizza-shop.net
 
@@ -65,33 +66,33 @@ services:
 ###  api api.auth : auth, check, refresh de token JWT
 ###  utilise sa propre base de données
 ######################################
-#  api.pizza-auth:
-#    image: 'canals/php:latest'
-#    env_file: ./auth.env
-#    ports:
-#      - '2780:80'
-#      - '2743:443'
-#    volumes:
-#      - ../auth.pizza-shop/public:/var/www/html
-#      - ../auth.pizza-shop:/var/www
-#    working_dir: /var/www
-#    networks:
-#      pizza-shop.net:
-#        aliases:
-#          - auth.pizza-shop.local
-#    depends_on:
-#      - pizza-shop.auth.db
+  api.pizza-auth:
+    image: 'canals/php:latest'
+    env_file: ./auth.env
+    ports:
+      - '40506:80'
+      - '40507:443'
+    volumes:
+      - ../auth.pizza-shop/public:/var/www/html
+      - ../auth.pizza-shop:/var/www
+    working_dir: /var/www
+    networks:
+      pizza-shop.net:
+        aliases:
+          - auth.pizza-shop.local
+    depends_on:
+      - pizza-shop.auth.db
 
-#  pizza-shop.auth.db:
-#    image: 'mariadb:latest'
-#    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
-#    env_file: ./auth.env
-#    ports:
-#      - '3308:3306'
-#    networks:
-#      - pizza-shop.net
-#    volumes:
-#      - ../auth.pizza-shop/sql:/var/sql
+  pizza-shop.auth.db:
+    image: 'mariadb:latest'
+    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
+    env_file: ./auth.env
+    ports:
+      - '40508:3306'
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ../auth.pizza-shop/sql:/var/sql
 
  
 
