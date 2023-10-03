@@ -55,8 +55,9 @@ services:
   #
   adminer:
     image: adminer
+    command: php -S 0.0.0.0:8080 -t /var/www/html
     ports:
-      - '40505:8080'
+      - '40510:8080'
     networks:
       - pizza-shop.net
 
