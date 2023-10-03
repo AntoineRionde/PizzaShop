@@ -2,6 +2,7 @@
 namespace pizzashop\shop\domain\service\classes;
 use Exception;
 use pizzashop\shop\domain\dto\order\OrderDTO;
+use pizzashop\shop\domain\entities\catalog\Product;
 use pizzashop\shop\domain\entities\order\Item;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\service\interfaces\IOrder;
@@ -20,10 +21,13 @@ class OrderService implements IOrder
             $commandeEntity = Order::findOrFail($id);
 
             $itemsEntity = Item::where('commande_id', '=' ,$id)->get();
+
+            $infoProducts = Product::where('numero', '=' ,$itemsEntity->numero)->get();
             $arrayItm = array();
             $i = 0;
             foreach($itemsEntity as $itemEntity) {
                 $arrayItm[$i] =  $itemEntity->itemToDTO();
+                $arrayItm[$i].array_push($infoProducts->descriptionToDTO());
                 $i++;
             }
 
@@ -53,10 +57,6 @@ class OrderService implements IOrder
     public function createOrder(OrderDTO $orderDTO): void
     {
         try{
-
-
-            //commande : identifiant du client (mail), type de livraison choisie, liste des items commandés (pour
-            //chacun, numéro, taille, quantité).
             //La méthode interroge le service Catalogue pour obtenir des informations sur chaque produit
             //commandé.
             //La commande est créée : un identifiant est créé, la date de commande est enregistrée, l'état initial
@@ -69,13 +69,18 @@ class OrderService implements IOrder
             $commande->mail_client = $orderDTO->mail_client;
             $commande->type_livraison = $orderDTO->type_livraison;
 
-            $itemsEntity = Item::where('id', '=' ,$orderDTO->id);
+            $itemsEntity = Item::where('commande_id', '=' ,$orderDTO->id)->get();
+
             $arrayItm = array();
             $i = 0;
             foreach($itemsEntity as $itemEntity) {
-                $arrayItm[$i] =  $itemEntity->itmToDTO();
+                $arrayItm[$i] =  $itemEntity->itemToDTOForCreate();
+
                 $i++;
             }
+
+
+
 
 
 
