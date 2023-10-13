@@ -4,6 +4,7 @@ declare(strict_types=1);
 use pizzashop\shop\app\actions\AccessOrderAction;
 use pizzashop\shop\app\actions\CreateOrderAction;
 use pizzashop\shop\app\actions\HomeAction;
+use pizzashop\shop\app\actions\RefreshTokenAction;
 use pizzashop\shop\app\actions\ValidateOrderAction;
 use pizzashop\shop\app\actions\SigninAction;
 use pizzashop\shop\app\actions\ValidateTokenAction;
@@ -28,6 +29,10 @@ return function( App $app):void {
     // mettre /api/ devant ? (sujet)
     $app->post('/users/signin', SigninAction::class)
         ->setName('sign_in');
+
     $app->get('/api/users/validate', ValidateTokenAction::class)
         ->setName('validate_token');
+
+    $app->post('/api/users/refresh', RefreshTokenAction::class)
+        ->setName('refresh_token');
 };
