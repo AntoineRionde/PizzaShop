@@ -4,9 +4,9 @@ namespace pizzashop\shop\domain\service\interfaces;
 
 interface IAuth
 {
-    public function authenticate($userId, $password);
-    public function authenticateWithRefreshToken($refreshToken);
-    public function getProfile($username, $email, $refreshToken);
+    public function verifyCredentials($username, $password);
+    public function verifyRefreshToken($refreshToken);
+    public function getAuthenticatedUserProfile($userId);
     public function register($username, $email, $password);
-    public function activate($username, $email, $password);
+    public function activate($refreshToken);
 }

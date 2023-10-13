@@ -6,20 +6,30 @@ use pizzashop\shop\domain\service\interfaces\IAuth;
 
 class AuthService implements IAuth
 {
+    private $db;
 
-    public function authenticate($userId, $password)
-    {
-
+    public function __construct($db) {
+        $this->db = $db;
     }
 
-    public function authenticateWithRefreshToken($refreshToken)
+    public function verifyCredentials($username, $password)
     {
-        // TODO: Implement authenticateWithRefreshToken() method.
+        $user = $this->db->table('users')->where('username', $username)->first();
+        if ($user && password_verify($password, $user->password)) {
+            return $user;
+        }
+        return null;
     }
 
-    public function getProfile($username, $email, $refreshToken)
+    public function verifyRefreshToken($refreshToken)
     {
-        // TODO: Implement getProfile() method.
+        $user = $this->db->table('users')->where('refresh_token', $refreshToken)->first();
+        return $user ? $user : null;
+    }
+
+    public function getAuthenticatedUserProfile($userId)
+    {
+        return $this->db->table('users')->find($userId);
     }
 
     public function register($username, $email, $password)
@@ -27,7 +37,7 @@ class AuthService implements IAuth
         // TODO: Implement register() method.
     }
 
-    public function activate($username, $email, $password)
+    public function activate($refreshToken)
     {
         // TODO: Implement activate() method.
     }
