@@ -1,6 +1,6 @@
 
 auth.pizza-shop/.DS_Store
-.idea
+.idea/*
 *.xml
 /shop.pizza-shop/vendor/*
 /shop.pizza-shop/composer.lock
