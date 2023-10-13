@@ -38,4 +38,12 @@ class JWTAuthService
         }
         return null;
     }
+
+    public function signup($username, $email, $password) {
+        // TODO later
+    }
+
+    public function activate($refreshToken) {
+        // TODO later
+    }
 }
