@@ -32,6 +32,8 @@ class AccessOrderAction extends AbstractAction
             $order = $order->toArray() + $links;
             $order_json = json_encode($order);
             $response->getBody()->write($order_json);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(302);
+
         } catch (Exception $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(404);

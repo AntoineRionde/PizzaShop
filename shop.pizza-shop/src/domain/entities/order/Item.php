@@ -22,7 +22,4 @@ class Item extends Model
     public function itemToDTO(){
         return new ItemDTO($this->id, $this->numero, $this->libelle, $this->taille, $this->libelle_taille, $this->tarif, $this->quantite, $this->commande_id);
     }
-    public function itemToDTOforCreate(){
-        return new ItemDTO($this->numero, $this->taille, $this->quantite);
-    }
 }
