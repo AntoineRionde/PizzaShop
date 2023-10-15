@@ -4,6 +4,6 @@ namespace pizzashop\shop\domain\service\interfaces;
 
 interface ICatalog
 {
-    public function getProductInfo($id);
+    public function readProduct(int $numero);
 
 }

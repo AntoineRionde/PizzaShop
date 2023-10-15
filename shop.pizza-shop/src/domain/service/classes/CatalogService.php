@@ -2,6 +2,7 @@
 
 namespace pizzashop\shop\domain\service\classes;
 
+use pizzashop\shop\domain\entities\catalog\Product;
 use pizzashop\shop\domain\service\interfaces\ICatalog;
 
 class CatalogService implements ICatalog
@@ -13,7 +14,8 @@ class CatalogService implements ICatalog
         $this->orderService = $orderService;
     }
 
-    public function getProductInfo($id) {
-
+    public function readProduct(int $numero) {
+        $product = Product::findOrFail($numero);
+        return $product->toDTO();
     }
 }
