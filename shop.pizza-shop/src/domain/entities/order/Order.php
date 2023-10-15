@@ -6,6 +6,14 @@ use pizzashop\shop\domain\dto\order\OrderDTO;
 
 class Order extends Model
 {
+    const ETAT_CREE = 1;
+    const ETAT_VALIDE = 2;
+    const ETAT_PAYE = 3;
+    const ETAT_LIVRE = 4;
+
+    const LIVRAISON_SUR_PLACE = 1;
+    const LIVRAISON_A_EMPORTER = 2;
+    const LIVRAISON_A_DOMICILE = 3;
 
     protected $connection = 'commande';
     protected $table = 'commande';

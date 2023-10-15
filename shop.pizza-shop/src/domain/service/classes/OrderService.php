@@ -4,6 +4,7 @@ use Exception;
 use pizzashop\shop\domain\dto\order\OrderDTO;
 use pizzashop\shop\domain\entities\order\Item;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
+use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\interfaces\IOrder;
 use pizzashop\shop\domain\entities\order\Order;
 
@@ -36,11 +37,14 @@ class OrderService implements IOrder
     /**
      * @throws OrderNotFoundException
      */
-    public function validateCommande(String $id): OrderDTO
+    public function validateOrder(string $id): OrderDTO
     {
         try {
             $commandeEntity = Order::findOrFail($id);
-            $commandeEntity->etatCreation = "VALIDE";
+            if($commandeEntity->etatCreation !== Order::ETAT_CREE) {
+                throw new OrderRequestInvalidException();
+            }
+            $commandeEntity->etatCreation = Order::ETAT_VALIDE;
             return $commandeEntity->toDTO();
         }catch(Exception $e) {
             throw new OrderNotFoundException();
@@ -51,52 +55,9 @@ class OrderService implements IOrder
     public function createOrder(OrderDTO $orderDTO): void
     {
         try{
-            //La méthode interroge le service Catalogue pour obtenir des informations sur chaque produit
-            //commandé.
-            //La commande est créée : un identifiant est créé, la date de commande est enregistrée, l'état initial
-            //de la commande est CREE.
-            //Le montant total de la commande est calculé.
-            //Un objet de type CommandeDTO est retourné, incluant toutes les informations disponibles.
-
-            $commande = new Commande();
-            $commande->id = $orderDTO->id;
-            $commande->mail_client = $orderDTO->mail_client;
-            $commande->type_livraison = $orderDTO->type_livraison;
-
-            $itemsEntity = Item::where('commande_id', '=' ,$orderDTO->id)->get();
-
-            $arrayItm = array();
-            $i = 0;
-            foreach($itemsEntity as $itemEntity) {
-                $arrayItm[$i] =  $itemEntity->itemToDTOForCreate();
-
-                $i++;
-            }
-
-
-
-
-
-
-
-
-
-
-
-
 
         }catch(Exception $e){
             throw new OrderNotFoundException();
         }
-    }
-
-    public function validateOrder(string $id): void
-    {
-        // TODO: Implement validateOrder() method.
-    }
-
-    public function getOrder(string $id): OrderDTO
-    {
-        // TODO: Implement getOrder() method.
     }
 }

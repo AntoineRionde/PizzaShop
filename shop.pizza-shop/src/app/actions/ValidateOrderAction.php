@@ -19,11 +19,8 @@ class ValidateOrderAction
     public function __invoke($request, $response, $args)
     {
         try {
-            if ($request->getParsedBody()['etat'] != 'validate') {
-                throw new OrderRequestInvalidException();
-            }
             $this->os->validateOrder($args['id_order']);
-            $response->getBody()->write(json_encode(['message' => 'Order validated']));
+            $response->getBody()->write(json_encode(['etat' => 'validee']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         } catch (OrderNotFoundException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
