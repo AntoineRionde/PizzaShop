@@ -14,6 +14,11 @@ class Order extends Model
     const LIVRAISON_SUR_PLACE = 1;
     const LIVRAISON_A_EMPORTER = 2;
     const LIVRAISON_A_DOMICILE = 3;
+    const TYPE_LIVRAISON = [
+        self::LIVRAISON_SUR_PLACE,
+        self::LIVRAISON_A_EMPORTER,
+        self::LIVRAISON_A_DOMICILE
+    ];
 
     protected $connection = 'commande';
     protected $table = 'commande';
