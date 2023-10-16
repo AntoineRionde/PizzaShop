@@ -27,7 +27,7 @@ class Product extends Model
             ->withPivot('tarif');
     }
 
-    public function productToDTOz(){
+    public function toDTO(){
         return new ProductDTO($this->numero, $this->libelle, $this->description, $this->image, $this->prix);
     }
 

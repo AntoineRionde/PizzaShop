@@ -2,7 +2,7 @@
 
 namespace pizzashop\shop\domain\dto\item;
 
-class ItemDto
+class ItemDTO
 {
 
     public int $id;
@@ -25,6 +25,20 @@ class ItemDto
         $this->tarif = $tarif;
         $this->quantite = $quantite;
         $this->commande_id = $commande_id;
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'numero' => $this->numero,
+            'libelle' => $this->libelle,
+            'taille' => $this->taille,
+            'libelle_taille' => $this->libelle_taille,
+            'tarif' => $this->tarif,
+            'quantite' => $this->quantite,
+            'commande_id' => $this->commande_id,
+        ];
     }
 
 

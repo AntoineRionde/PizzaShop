@@ -3,7 +3,7 @@
 namespace pizzashop\shop\domain\entities\order;
 
 use Illuminate\Database\Eloquent\Model;
-use pizzashop\shop\domain\dto\item\ItemDto;
+use pizzashop\shop\domain\dto\item\ItemDTO;
 
 class Item extends Model
 {
@@ -19,7 +19,7 @@ class Item extends Model
         return $this->belongsTo(Order::class, 'commande_id', 'id');
     }
 
-    public function itemToDTO(){
+    public function toDTO(){
         return new ItemDTO($this->id, $this->numero, $this->libelle, $this->taille, $this->libelle_taille, $this->tarif, $this->quantite, $this->commande_id);
     }
 }
