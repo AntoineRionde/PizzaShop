@@ -55,15 +55,15 @@ class OrderService implements IOrder
                 v::positive()->validate($product->quantite) ? $itemEntity->quantite = $item->quantite : throw new OrderRequestInvalidException();
 
                 $this->logger->info('Item créé', $itemEntity->toDTO()->toArray());
-                //$itemEntity->save(); Pas sûr
+                $itemEntity->save();
 
                 $montantTotal += $product->prix * $item->quantite;
             }
 
             $commandeEntity->montant_total = $montantTotal;
-            //$commandeEntity->save(); Pas sûr
             $commandeDTO = $commandeEntity->toDTO();
             $this->logger->info('Commande créée', $commandeDTO->toArray());
+            $commandeEntity->save();
             return $commandeDTO;
 
         } catch (Exception $e) {
@@ -78,15 +78,16 @@ class OrderService implements IOrder
     {
         try {
             $commandeEntity = Order::findOrFail($id);
-
             $itemsEntity = Item::where('commande_id', '=', $id)->get();
-            $arrayItm = array();
+            $arrayItm = [];
             $i = 0;
+
             foreach ($itemsEntity as $itemEntity) {
                 $arrayItm[$i] = $itemEntity->toDTO();
                 $i++;
             }
             $commandeEntity->items = $arrayItm;
+
             return $commandeEntity->toDTO();
         } catch (Exception $e) {
             throw new OrderNotFoundException();
