@@ -17,6 +17,8 @@ class AccessOrderAction extends AbstractAction
 
     public function __invoke($request, $response, $args)
     {
+        $response = $this->addCorsHeaders($response);
+
         try {
             $order = $this->os->readOrder($args['id_order']);
 

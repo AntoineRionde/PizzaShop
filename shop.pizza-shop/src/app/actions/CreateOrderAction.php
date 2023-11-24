@@ -22,6 +22,9 @@ class CreateOrderAction extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
+
+        $response = $this->addCorsHeaders($response);
+
         try {
             $order = $this->os->createOrder($request->getParsedBody());
             $response->getBody()->write(json_encode($order));

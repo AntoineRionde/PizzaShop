@@ -7,7 +7,7 @@ use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\classes\OrderService;
 
-class ValidateOrderAction
+class ValidateOrderAction extends AbstractAction
 {
     private OrderService $os;
 
@@ -18,6 +18,8 @@ class ValidateOrderAction
 
     public function __invoke($request, $response, $args)
     {
+        $response = $this->addCorsHeaders($response);
+
         try {
             $this->os->validateOrder($args['id_order']);
             $response->getBody()->write(json_encode(['etat' => 'validee']));
