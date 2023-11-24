@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\app\actions;
+namespace pizzashop\auth\api\app\actions;
 
 
 use pizzashop\shop\domain\service\classes\AuthService;

@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\auth;
+namespace pizzashop\auth\api\domain\entities\auth;
 use Illuminate\Database\Eloquent\Model;
 use pizzashop\shop\domain\dto\auth\UserDTO;
 

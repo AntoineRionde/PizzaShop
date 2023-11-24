@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\service\classes;
+namespace pizzashop\auth\api\domain\service\classes;
 
 use Firebase\JWT\JWT;
 

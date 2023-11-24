@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\service\interfaces;
+namespace pizzashop\auth\api\domain\service\interfaces;
 
 interface IAuth
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\dto\auth;
+namespace pizzashop\auth\api\domain\dto\auth;
 
 class UserDTO
 {
