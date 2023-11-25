@@ -5,7 +5,7 @@ use Slim\Factory\AppFactory;
 use Illuminate\Database\Capsule\Manager as Eloquent;
 
 $settings = require_once __DIR__ . '/settings.php';
-$dependencies = require_once __DIR__.'/services_dependencies.php';
+$services = require_once __DIR__.'/services_dependencies.php';
 $actions= require_once __DIR__.'/actions_dependencies.php';
 
 $eloquent = new Eloquent();
@@ -17,7 +17,7 @@ $eloquent->bootEloquent();
 
 $builder = new ContainerBuilder();
 $builder->addDefinitions($settings);
-$builder->addDefinitions($dependencies);
+$builder->addDefinitions($services);
 $builder->addDefinitions($actions);
 try {
     $c = $builder->build();
