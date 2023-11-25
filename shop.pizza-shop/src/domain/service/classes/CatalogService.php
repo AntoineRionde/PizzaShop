@@ -7,12 +7,6 @@ use pizzashop\shop\domain\service\interfaces\ICatalog;
 
 class CatalogService implements ICatalog
 {
-    private OrderService $orderService;
-
-    public function __construct(OrderService $orderService)
-    {
-        $this->orderService = $orderService;
-    }
 
     public function readProduct(int $numero) {
         $product = Product::findOrFail($numero);

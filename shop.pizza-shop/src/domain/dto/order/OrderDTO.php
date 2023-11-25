@@ -27,7 +27,7 @@ class OrderDTO
         $this->items = $items;
     }
 
-    public function toArray()
+    public function toArray() : array
     {
         return [
             'id' => $this->id,
@@ -39,6 +39,20 @@ class OrderDTO
             'delai' => $this->delai,
             'items' => $this->items
         ];
+    }
+
+    public function fromArray(array $array) : OrderDTO
+    {
+        return new OrderDTO(
+            $array['id'],
+            $array['date_commande'],
+            $array['type_livraison'],
+            $array['etat'],
+            $array['montant_total'],
+            $array['mail_client'],
+            $array['delai'],
+            $array['items']
+        );
     }
 
 

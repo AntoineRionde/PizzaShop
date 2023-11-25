@@ -14,7 +14,7 @@ class Item extends Model
     public $timestamps = false;
     protected $fillable = ['id', 'numero', 'libelle', 'taille', 'libelle_taille', 'tarif', 'quantite', 'commande_id'];
 
-    public function commande()
+    public function order()
     {
         return $this->belongsTo(Order::class, 'commande_id', 'id');
     }

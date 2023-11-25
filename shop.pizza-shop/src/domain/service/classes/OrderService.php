@@ -62,6 +62,7 @@ class OrderService implements IOrder
 
             $commandeEntity->montant_total = $montantTotal;
             $commandeDTO = $commandeEntity->toDTO();
+            $commandeDTO->items = $orderDTO->items;
             $this->logger->info('Commande créée', $commandeDTO->toArray());
             $commandeEntity->save();
             return $commandeDTO;
@@ -78,15 +79,6 @@ class OrderService implements IOrder
     {
         try {
             $commandeEntity = Order::findOrFail($id);
-            $itemsEntity = Item::where('commande_id', '=', $id)->get();
-            $arrayItm = [];
-            $i = 0;
-
-            foreach ($itemsEntity as $itemEntity) {
-                $arrayItm[$i] = $itemEntity->toDTO();
-                $i++;
-            }
-            $commandeEntity->items = $arrayItm;
 
             return $commandeEntity->toDTO();
         } catch (Exception $e) {
@@ -96,16 +88,19 @@ class OrderService implements IOrder
 
     /**
      * @throws OrderNotFoundException
+     * @throws OrderRequestInvalidException
      */
     public function validateOrder(string $id): OrderDTO
     {
         try {
             $commandeEntity = Order::findOrFail($id);
-            if ($commandeEntity->etatCreation !== Order::ETAT_CREE) {
+            if ($commandeEntity->etat !== Order::ETAT_CREE) {
                 throw new OrderRequestInvalidException();
             }
-            $commandeEntity->etatCreation = Order::ETAT_VALIDE;
+            $commandeEntity->etat = Order::ETAT_VALIDE;
             return $commandeEntity->toDTO();
+        } catch (OrderRequestInvalidException $e) {
+            throw new OrderRequestInvalidException();
         } catch (Exception $e) {
             throw new OrderNotFoundException();
         }

@@ -29,7 +29,7 @@ class Order extends Model
     public $fillable = ['id', 'date_commande', 'type_livraison','etat', 'montant_total', 'mail_client'];
 
     public function toDTO(){
-        return new OrderDTO($this->id, $this->date_commande, $this->type_livraison, $this->etat, $this->montant_total, $this->mail_client, $this->delai ,$this->items);
+        return new OrderDTO($this->id, $this->date_commande, $this->type_livraison, $this->etat, $this->montant_total, $this->mail_client, $this->delai ,$this->items()->get()->toArray());
     }
 
     public function items()
