@@ -32,11 +32,6 @@ class AuthService implements IAuth
         return $this->db->table('users')->find($userId);
     }
 
-    public function register($username, $email, $password)
-    {
-        // TODO: Implement register() method.
-    }
-
     public function activate($refreshToken)
     {
         // TODO: Implement activate() method.

@@ -3,13 +3,11 @@
 namespace pizzashop\auth\api\app\actions;
 
 
-use pizzashop\shop\domain\service\classes\AuthService;
-use pizzashop\shop\domain\service\classes\JWTAuthService;
-use pizzashop\shop\domain\service\classes\JWTManager;
-use Slim\Routing\RouteContext;
+use pizzashop\auth\api\domain\service\classes\AuthService;
+use pizzashop\auth\api\domain\service\classes\JWTAuthService;
+use pizzashop\auth\api\domain\service\classes\JWTManager;
 
-
-class SigninAction
+class SigninAction extends AbstractAction
 {
     public function __invoke($request, $response, $args)
     {
