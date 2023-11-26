@@ -16,12 +16,12 @@ class JWTManager
     }
 
     public function createToken($data) {
-        $issuedAt = time();
+        $issuedAt = new \DateTimeImmutable();
         $expire = $issuedAt + $this->tokenLifetime;
 
         $payload = array(
             "iss" => "pizza-shop",
-            "iat" => $issuedAt,
+            "iat" => $issuedAt->getTimestamp(),
             "exp" => $expire,
             "upr" => $data
         );

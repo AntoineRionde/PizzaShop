@@ -3,7 +3,7 @@
 namespace pizzashop\auth\api\domain\service\classes;
 
 use Carbon\Carbon;
-use pizzashop\shop\domain\service\interfaces\IAuth;
+use pizzashop\auth\api\domain\service\interfaces\IAuth;
 
 class AuthService implements IAuth
 {
@@ -69,5 +69,20 @@ class AuthService implements IAuth
             'activation_token_expiration_date' => null,
         ]);
 
+    }
+
+    public function getAuthenticatedUserProfile($userId)
+    {
+        // TODO: Implement getAuthenticatedUserProfile() method.
+    }
+
+    public function register($username, $email, $password)
+    {
+        // TODO: Implement register() method.
+    }
+
+    public function activate($refreshToken)
+    {
+        // TODO: Implement activate() method.
     }
 }
