@@ -31,19 +31,29 @@ class JWTAuthService
         return null;
     }
 
-    public function refresh($refreshToken) {
-        $user = $this->authProvider->verifyRefreshToken($refreshToken);
-        if ($user) {
-            return $this->signIn($user->username, $user->password);
-        }
-        return null;
-    }
-
     public function signup($username, $email, $password) {
-        // TODO later
+
+        $existingUser = $this->authProvider->getUserByEmail($email);
+        if ($existingUser) {
+            return null;
+        }
+        $newUser = $this->authProvider->createUser($username, $email, $password);
+        return $newUser;
     }
 
-    public function activate($refreshToken) {
-        // TODO later
+    public function activate($activationToken) {
+
+        $user = $this->authProvider->verifyActivationToken($activationToken);
+
+        if ($user) {
+            $succes = $this->authProvider->activateUserAccount($user->id);
+
+            if ($succes) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace pizzashop\auth\api\domain\service\classes;
 
+use Carbon\Carbon;
 use pizzashop\shop\domain\service\interfaces\IAuth;
 
 class AuthService implements IAuth
@@ -27,18 +28,44 @@ class AuthService implements IAuth
         return $user ? $user : null;
     }
 
-    public function getAuthenticatedUserProfile($userId)
+    public function getUserByEmail($email)
     {
-        return $this->db->table('users')->find($userId);
+        $user = $this->db->table('users')->where('email', $email)->first();
+        return $user ? $user : null;
     }
 
-    public function register($username, $email, $password)
+    public function createUser($username, $email, $password)
     {
-        // TODO: Implement register() method.
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $activationToken = bin2hex(random_bytes(16));
+
+        $user = [
+            'username' => $username,
+            'email' => $email,
+            'password' => $hashedPassword,
+            'activation_token' => $activationToken,
+            'activation_token_expiration_date' => Carbon::now()->addMinutes(5)->toDateTimeString(),
+        ];
+
+        $userId = $this->db->table('users')->insertGetId($user);
+        return $userId ? $this->db->table('users')->find($userId) : null;
     }
 
-    public function activate($refreshToken)
+    public function verifyActivationToken($activationToken)
     {
-        // TODO: Implement activate() method.
+        $user = $this->db->table('users')
+            ->where('activation_token', $activationToken)
+            ->where('activation_token_expiration_date', '>', Carbon::now())
+            ->first();
+        return $user ? $user : null;
+    }
+
+    public function activateUserAccount($id)
+    {
+        return $this->db->table('users')->where('id', $id)->update([
+            'active' => 1,
+            'activation_token' => null,
+            'activation_token_expiration_date' => null,
+        ]);
     }
 }
