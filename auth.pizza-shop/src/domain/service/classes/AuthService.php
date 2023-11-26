@@ -49,6 +49,7 @@ class AuthService implements IAuth
 
         $userId = $this->db->table('users')->insertGetId($user);
         return $userId ? $this->db->table('users')->find($userId) : null;
+
     }
 
     public function verifyActivationToken($activationToken)
@@ -67,5 +68,6 @@ class AuthService implements IAuth
             'activation_token' => null,
             'activation_token_expiration_date' => null,
         ]);
+
     }
 }
