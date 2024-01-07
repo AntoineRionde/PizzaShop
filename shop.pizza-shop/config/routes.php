@@ -13,7 +13,7 @@ return function( App $app):void {
     $app->get('/', HomeAction::class)
         ->setName('home');
 
-    $app->post  ('/order[/]', CreateOrderAction::class)
+    $app->post('/order[/]', CreateOrderAction::class)
         ->setName('create_order');
 
     $app->get('/orders/{id_order}[/]', AccessOrderAction::class)
@@ -21,6 +21,15 @@ return function( App $app):void {
 
     $app->patch('/orders/{id_order}[/]', ValidateOrderAction::class)
         ->setName('validate_order');
+
+    $app->get('produits[/]', GetProductsAction::class)
+        ->setName('get_products');
+
+    $app->get('produits/{id}[/]', GetProductAction::class)
+        ->setName('get_product');
+
+    $app->get('categories/{id_categorie}/produits[/]', GetProductsByCategorieAction::class)
+        ->setName('get_products_by_categories');
 
     // routes gérant l'authentification avec l'API
 

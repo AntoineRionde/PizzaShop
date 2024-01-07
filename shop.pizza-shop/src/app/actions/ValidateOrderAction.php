@@ -6,14 +6,15 @@ use Exception;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\classes\OrderService;
+use Psr\Container\ContainerInterface;
 
 class ValidateOrderAction extends AbstractAction
 {
     private OrderService $os;
 
-    public function __construct(OrderService $os)
+    public function __construct(ContainerInterface $container)
     {
-        $this->os = $os;
+        $this->os = $container->get('order.service');
     }
 
     public function __invoke($request, $response, $args)

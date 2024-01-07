@@ -7,6 +7,7 @@ use pizzashop\shop\domain\dto\order\OrderDTO;
 use pizzashop\shop\domain\exception\InternalServerException;
 use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\classes\OrderService;
+use Psr\Container\ContainerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Routing\RouteContext;
@@ -15,12 +16,9 @@ class CreateOrderAction extends AbstractAction
 {
 
     private OrderService $os;
-    private OrderDTO $orderDTO;
-
-    public function __construct(OrderService $os, OrderDTO $orderDTO)
+    public function __construct(ContainerInterface $container)
     {
-        $this->os = $os;
-        $this->orderDTO = $orderDTO;
+        $this->os = $container->get('order.service');
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
@@ -29,14 +27,16 @@ class CreateOrderAction extends AbstractAction
         $response = $this->addCorsHeaders($response);
 
         try {
+            if ($request->getMethod() !== 'POST') {
+                return $response->withHeader('Location', '/')->withStatus(302);
+            }
             // Etendre l'action de création d'une commande dans l'api commandes pour vérifier la présence d'un
             //token JWT. En cas d'absence, retourner une réponse d'erreur avec un code 401.
             $token = $request->getHeader('Authorization')[0];
             if (empty($token)) {
                 $response->getBody()->write(json_encode(['error' => 'Token absent']));
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-            }
-            else // sinon vérifier la validité du token. En cas d'erreur, retourner une réponse d'erreur avec un code 401. {
+            } else // sinon vérifier la validité du token. En cas d'erreur, retourner une réponse d'erreur avec un code 401. {
             {
                 $client = new Client([
                     'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:16584',
@@ -49,8 +49,7 @@ class CreateOrderAction extends AbstractAction
                             'token' => $token
                         ]
                     ]);
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
                     return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
                 }
