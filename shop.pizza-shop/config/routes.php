@@ -24,8 +24,8 @@ return function( App $app):void {
     $app->patch('/orders/{id_order}[/]', ValidateOrderAction::class)
         ->setName('validate_order');
 
-//    $app->get('/products[/]', GetProductsAction::class)
-//        ->setName('get_products');
+    $app->get('/products[/]', GetProductsAction::class)
+        ->setName('get_products');
 
     $app->get('/product/{id}[/]', GetProductAction::class)
         ->setName('get_product');
