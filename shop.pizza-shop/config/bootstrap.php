@@ -11,7 +11,6 @@ $actions= require_once __DIR__.'/actions_dependencies.php';
 $eloquent = new Eloquent();
 $eloquent->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'), 'catalog');
 $eloquent->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'), 'commande');
-$eloquent->addConnection(parse_ini_file(__DIR__ . '/auth.db.ini'), 'auth');
 $eloquent->setAsGlobal();
 $eloquent->bootEloquent();
 
