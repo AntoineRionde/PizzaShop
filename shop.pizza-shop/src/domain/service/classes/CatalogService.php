@@ -13,4 +13,14 @@ class CatalogService implements ICatalog
         $product = Product::findOrFail($numero);
         return $product->toDTO();
     }
+
+    public function getProducts(): array
+    {
+        $products = Product::all();
+        $productsDTO = array();
+        foreach ($products as $product) {
+            $productsDTO[] = $product->toDTO();
+        }
+        return $productsDTO;
+    }
 }

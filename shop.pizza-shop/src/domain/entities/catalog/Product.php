@@ -28,7 +28,6 @@ class Product extends Model
     }
 
     public function toDTO(){
-        return new ProductDTO($this->numero, $this->libelle, $this->description, $this->image, $this->prix);
+        return new ProductDTO($this->numero, $this->libelle, $this->description, $this->image, $this->sizes()->get());
     }
-
 }
