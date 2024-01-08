@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use pizzashop\shop\app\actions\GetProductAction;
+use pizzashop\shop\app\actions\GetProductsAction;
 use pizzashop\shop\app\actions\SigninAction;
 use pizzashop\shop\app\actions\AccessOrderAction;
 use pizzashop\shop\app\actions\CreateOrderAction;
@@ -22,14 +24,14 @@ return function( App $app):void {
     $app->patch('/orders/{id_order}[/]', ValidateOrderAction::class)
         ->setName('validate_order');
 
-    $app->get('produits[/]', GetProductsAction::class)
-        ->setName('get_products');
+//    $app->get('/products[/]', GetProductsAction::class)
+//        ->setName('get_products');
 
-    $app->get('produits/{id}[/]', GetProductAction::class)
+    $app->get('/product/{id}[/]', GetProductAction::class)
         ->setName('get_product');
 
-    $app->get('categories/{id_categorie}/produits[/]', GetProductsByCategorieAction::class)
-        ->setName('get_products_by_categories');
+//    $app->get('/categories/{id_categorie}/product[/]', GetProductsByCategorieAction::class)
+//        ->setName('get_products_by_categories');
 
     // routes gérant l'authentification avec l'API
 
