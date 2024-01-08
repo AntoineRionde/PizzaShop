@@ -8,4 +8,6 @@ interface ICatalog
 {
     public function getProduct(int $numero) : ProductDTO;
 
+    public function getProducts() : array;
+
 }
