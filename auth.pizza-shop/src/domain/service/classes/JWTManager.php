@@ -2,7 +2,12 @@
 
 namespace pizzashop\auth\api\domain\service\classes;
 
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+use UnexpectedValueException;
 
 
 class JWTManager
@@ -10,31 +15,34 @@ class JWTManager
     private $secretKey;
     private $tokenLifetime;
 
-    public function __construct($secretKey, $tokenLifetime) {
+    public function __construct($secretKey, $tokenLifetime)
+    {
         $this->secretKey = $secretKey;
         $this->tokenLifetime = $tokenLifetime;
     }
 
-    public function createToken($data) {
-        $issuedAt = new \DateTimeImmutable();
+    public function createToken($data): string
+    {
+        $issuedAt = time();
         $expire = $issuedAt + $this->tokenLifetime;
 
         $payload = array(
-            "iss" => "pizza-shop",
-            "iat" => $issuedAt->getTimestamp(),
+            "iss" => "http://localhost:8081",
+            "iat" => $issuedAt,
             "exp" => $expire,
             "upr" => $data
         );
 
-        return JWT::encode($payload, $this->secretKey);
+        return JWT::encode($payload, $this->secretKey, 'HS256');
     }
 
-    public function validateToken($token) {
+    public function validateToken($token) : array | string
+    {
         try {
-            $decoded = JWT::decode($token, $this->secretKey, array('HS256'));
-            return (array) $decoded;
-        } catch (\Exception $e) {
-            return null;
+            $token = JWT::decode($token, new Key($this->secretKey, 'HS256'));
+            return $token->payload;
+        } catch (ExpiredException|SignatureInvalidException|BeforeValidException|UnexpectedValueException $e) {
+            return $e->getMessage();
         }
     }
 }
