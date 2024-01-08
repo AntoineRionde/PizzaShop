@@ -42,7 +42,7 @@ class OrderService implements IOrder
             v::arrayType()->validate($orderDTO->items) ?: throw new OrderRequestInvalidException();
 
             foreach ($orderDTO->items as $item) {
-                $product = $this->catalogService->readProduct($item->numero);
+                $product = $this->catalogService->getProduct($item->numero);
 
                 $itemEntity = new Item();
                 $itemEntity->id = $product->id;

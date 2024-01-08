@@ -2,8 +2,10 @@
 
 namespace pizzashop\shop\domain\service\interfaces;
 
+use pizzashop\shop\domain\dto\catalog\ProductDTO;
+
 interface ICatalog
 {
-    public function readProduct(int $numero);
+    public function getProduct(int $numero) : ProductDTO;
 
 }
