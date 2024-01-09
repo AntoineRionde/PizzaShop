@@ -72,6 +72,16 @@ class OrderService implements IOrder
         }
     }
 
+    public function readAllOrders(): array
+    {
+        $commandes = Order::all();
+        $commandesDTO = [];
+        foreach ($commandes as $commande) {
+            $commandesDTO[] = $commande->toDTO();
+        }
+        return $commandesDTO;
+    }
+
     /**
      * @throws OrderNotFoundException
      */

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use pizzashop\shop\app\actions\AccessOrdersAction;
 use pizzashop\shop\app\actions\GetProductAction;
 use pizzashop\shop\app\actions\GetProductsAction;
 use pizzashop\shop\app\actions\GetProductsByCategoryAction;
@@ -18,6 +19,9 @@ return function( App $app):void {
 
     $app->post('/order[/]', CreateOrderAction::class)
         ->setName('create_order');
+
+    $app->get('/orders[/]', AccessOrdersAction::class)
+        ->setName('access_orders');
 
     $app->get('/orders/{id_order}[/]', AccessOrderAction::class)
         ->setName('access_order');
