@@ -23,4 +23,14 @@ class CatalogService implements ICatalog
         }
         return $productsDTO;
     }
+
+    public function getProductsByCategory(int $id_category)
+    {
+        $products = Product::where('categorie_id', $id_category)->get();
+        $productsDTO = array();
+        foreach ($products as $product) {
+            $productsDTO[] = $product->toDTO();
+        }
+        return $productsDTO;
+    }
 }

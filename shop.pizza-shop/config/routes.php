@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use pizzashop\shop\app\actions\GetProductAction;
 use pizzashop\shop\app\actions\GetProductsAction;
+use pizzashop\shop\app\actions\GetProductsByCategoryAction;
 use pizzashop\shop\app\actions\SigninAction;
 use pizzashop\shop\app\actions\AccessOrderAction;
 use pizzashop\shop\app\actions\CreateOrderAction;
@@ -30,20 +31,8 @@ return function( App $app):void {
     $app->get('/product/{id}[/]', GetProductAction::class)
         ->setName('get_product');
 
-//    $app->get('/categories/{id_categorie}/product[/]', GetProductsByCategorieAction::class)
-//        ->setName('get_products_by_categories');
-
-    // routes gérant l'authentification avec l'API
-
-    // mettre /api/ devant ? (sujet)
-//    $app->post('/users/signin', SigninAction::class)
-//        ->setName('sign_in');
-//
-//    $app->get('/api/users/validate', ValidateTokenAction::class)
-//        ->setName('validate_token');
-//
-//    $app->post('/api/users/refresh', RefreshTokenAction::class)
-//        ->setName('refresh_token');
+    $app->get('/categories/{id_category}/products[/]', GetProductsByCategoryAction::class)
+        ->setName('get_products_by_categories');
 
     $app->get("/signin[/]", SigninAction::class)
         ->setName("signin");

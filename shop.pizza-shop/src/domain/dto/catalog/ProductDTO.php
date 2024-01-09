@@ -24,10 +24,10 @@ class ProductDTO extends DTO
         $this->price = $price;
     }
 
-    public function __set($href, $value)
-    {
-        if ($href == 'href') {
-            $this->href = $value;
-        }
-     }
+    public function simplifyDto($baseUrl){
+        unset($this->price);
+        unset($this->label_size);
+        unset($this->category_label);
+        $this->href = $baseUrl . '/product/' . $this->number;
+    }
 }
