@@ -28,10 +28,8 @@ class ServiceCommandeTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        /*$dbcom = __DIR__ . '/../../config/commande.db.ini';
-        $dbcat = __DIR__ . '/../../config/catalog.db.ini';*/
-        $dbcom = '../../config/commande.db.ini';
-        $dbcat = '../../config/catalog.db.ini';
+        $dbcom = __DIR__ . '/../../config/commande.db.ini';
+        $dbcat = __DIR__ . '/../../config/catalog.db.ini';
         $db = new DB();
         $db->addConnection(parse_ini_file($dbcom), 'commande');
         $db->addConnection(parse_ini_file($dbcat), 'catalog');
@@ -106,22 +104,6 @@ class ServiceCommandeTest extends TestCase
         }
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
-        self::cleanDB();
-    }
-
-    private static function cleanDB()
-    {
-        foreach (self::$orderIds as $id) {
-            Order::find($id)->delete();
-        }
-        foreach (self::$itemIds as $id) {
-            Item::find($id)->delete();
-        }
-    }
-
     public function testAccederCommande()
     {
         $id = self::$orderIds[0];
@@ -158,5 +140,19 @@ class ServiceCommandeTest extends TestCase
         self::$orderService->validateOrder($orderId);
     }
 
+    public static function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+        self::cleanDB();
+    }
 
+    private static function cleanDB()
+    {
+        foreach (self::$orderIds as $id) {
+            Order::find($id)->delete();
+        }
+        foreach (self::$itemIds as $id) {
+            Item::find($id)->delete();
+        }
+    }
 }
