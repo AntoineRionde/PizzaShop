@@ -12,10 +12,12 @@ class GetProductsAction extends AbstractAction
 {
 
     private CatalogService $cs;
+    private string $baseUrl;
 
     public function __construct(ContainerInterface $container)
     {
         $this->cs = $container->get('catalog.service');
+        $this->baseUrl = $container->get('baseUrl');
     }
 
 
@@ -25,6 +27,13 @@ class GetProductsAction extends AbstractAction
 
         try {
             $products = $this->cs->getProducts();
+            foreach ($products as $product) {
+                $product->href = $this->baseUrl . '/product/' . $product->number;
+                unset($product->price);
+                unset($product->label_size);
+                unset($product->category_label);
+
+            }
 
             $products_json = json_encode($products);
             $response->getBody()->write($products_json);
