@@ -10,6 +10,7 @@ use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
 use pizzashop\auth\api\domain\exceptions\UserException;
 use pizzashop\auth\api\domain\service\interfaces\IAuth;
+use Random\RandomException;
 
 class AuthService implements IAuth
 {
@@ -38,6 +39,10 @@ class AuthService implements IAuth
         return User::where('email', $email)->first() ?: null;
     }
 
+    /**
+     * @throws UserException
+     * @throws RandomException
+     */
     public function createUser($username, $email, $password)
     {
         try {

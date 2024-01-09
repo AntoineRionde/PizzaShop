@@ -40,7 +40,7 @@ class JWTManager
     {
         try {
             $token = JWT::decode($token, new Key($this->secretKey, 'HS256'));
-            return $token->payload;
+            return $token->payload['upr'];
         } catch (ExpiredException|SignatureInvalidException|BeforeValidException|UnexpectedValueException $e) {
             return $e->getMessage();
         }

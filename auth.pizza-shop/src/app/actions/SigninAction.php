@@ -11,19 +11,34 @@ use Slim\Routing\RouteContext;
 
 class SigninAction
 {
+
+    private JWTManager $jwtManager;
+    private AuthService $authProvider;
+
+    public function __construct($jwtManager, $authProvider)
+    {
+        $this->jwtManager = $jwtManager;
+        $this->authProvider = $authProvider;
+    }
+
     public function __invoke($request, $response, $args)
     {
-        $authHeader = $request->getHeaderLine('Authorization');
-        list($username, $password) = explode(':', base64_decode(substr($authHeader, 6)));
+        $token = $request->getHeader('Authorization')[0] ;
 
-        $jwtAuthService = new JWTAuthService(new AuthService($this->db), new JWTManager(getenv('JWT_SECRET'), 3600));
+        $payload = $this->jwtManager->validateToken($token);
 
-        $result = $jwtAuthService->signIn($username, $password);
-        if ($result) {
-            return $response->withJson($result, 200);
+        if (isset($payload->email)) {
+            $user = $this->authProvider->getUserByEmail($payload->email);
+            if ($user) {
+                $tokenData = ['username' => $user->username, 'email' => $user->email];
+                $accessToken = $this->jwtManager->createToken($tokenData);
+                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
+                $tokens = ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+                return $response->withJson($tokens, 200);
+            }
+            return $response->withJson(['error' => 'Invalid or expired token'], 401);
         }
 
-        return $response->withJson(['error' => 'Invalid credentials'], 401);
     }
 
 }
