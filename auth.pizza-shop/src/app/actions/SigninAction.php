@@ -23,9 +23,10 @@ class SigninAction
 
     public function __invoke($request, $response, $args)
     {
-        $token = $request->getHeader('Authorization')[0] ;
+        $h = $request->getHeader('Authorization')[0];
+        $tokenstring = sscanf($h, "Basic %s")[0];
 
-        $payload = $this->jwtManager->validateToken($token);
+        $payload = $this->jwtManager->validateToken($tokenstring);
 
         if (isset($payload->email)) {
             $user = $this->authProvider->getUserByEmail($payload->email);

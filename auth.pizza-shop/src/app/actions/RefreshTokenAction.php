@@ -10,11 +10,11 @@ class RefreshTokenAction
 {
     public function __invoke($request, $response, $args)
     {
-        $authHeader = $request->getHeaderLine('Authorization');
-        $refreshToken   = substr($authHeader, 7);
+        $h = $request->getHeader('Authorization')[0];
+        $refreshToken = sscanf($h, "Bearer %s")[0];
 
-        $jwtAuthService = new JWTAuthService(new AuthService($this->db), new JWTManager(getenv('JWT_SECRET'), 3600));
-        $newTokens  = $jwtAuthService->refresh($refreshToken);
+        $jwtAuthService = new JWTAuthService(new AuthService(), new JWTManager(getenv('JWT_SECRET'), 3600));
+        $newTokens = $jwtAuthService->refresh($refreshToken);
 
         if ($newTokens) {
             return $response->withJson($newTokens, 200);

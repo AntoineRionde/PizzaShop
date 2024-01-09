@@ -9,10 +9,6 @@ use Slim\App;
 
 return function (App $app): void {
 
-
-    // routes gérant l'authentification avec l'API
-
-    // mettre /api/ devant ? (sujet)
     $app->post('/api/users/signin', SigninAction::class)
         ->setName('sign_in');
 
