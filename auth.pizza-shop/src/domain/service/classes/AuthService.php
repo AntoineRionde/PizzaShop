@@ -4,7 +4,6 @@ namespace pizzashop\auth\api\domain\service\classes;
 
 use Carbon\Carbon;
 use Exception;
-use pizzashop\auth\api\domain\dto\auth\UserDTO;
 use pizzashop\auth\api\domain\entities\auth\User;
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
@@ -94,12 +93,11 @@ class AuthService implements IAuth
     /**
      * @throws UserException
      */
-    public function getAuthenticatedUserProfile($username, $email, $refreshToken) : UserDTO
+    public function getAuthenticatedUserProfile($username, $email, $refreshToken) : User
     {
         try {
-            $user = $this->getUserByEmail($email);
-            return $user->toDTO();
-        } catch (Exception $e) {
+            return $this->getUserByEmail($email);
+        } catch (Exception) {
             throw new UserException("Error during user profile retrieval");
         }
     }
