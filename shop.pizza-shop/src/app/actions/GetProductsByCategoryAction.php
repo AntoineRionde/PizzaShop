@@ -3,12 +3,13 @@
 namespace pizzashop\shop\app\actions;
 
 use Exception;
+use pizzashop\shop\app\actions\AbstractAction;
 use pizzashop\shop\domain\service\classes\CatalogService;
 use Psr\Container\ContainerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class GetProductsAction extends AbstractAction
+class GetProductsByCategoryAction extends AbstractAction
 {
 
     private CatalogService $cs;
@@ -20,13 +21,12 @@ class GetProductsAction extends AbstractAction
         $this->baseUrl = $container->get('baseUrl');
     }
 
-
     public function __invoke(Request $request, Response $response, array $args)
     {
         $response = $this->addCorsHeaders($response);
 
         try {
-            $products = $this->cs->getProducts();
+            $products = $this->cs->getProductsByCategory((int)$args['id_category']);
             foreach ($products as $product) {
                 $product->simplifyDto($this->baseUrl);
             }
