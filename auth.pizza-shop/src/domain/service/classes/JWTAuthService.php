@@ -2,6 +2,12 @@
 
 namespace pizzashop\auth\api\domain\service\classes;
 
+use pizzashop\auth\api\domain\dto\auth\UserDTO;
+use pizzashop\auth\api\domain\entities\auth\User;
+use pizzashop\auth\api\domain\exceptions\CredentialsException;
+use pizzashop\auth\api\domain\exceptions\TokenException;
+use pizzashop\auth\api\domain\exceptions\UserException;
+
 class JWTAuthService
 {
     private AuthService $authProvider;
@@ -12,15 +18,23 @@ class JWTAuthService
         $this->jwtManager = $jwtManager;
     }
 
-    public function signIn($username, $password) {
-        $user = $this->authProvider->verifyCredentials($username, $password);
-        if ($user) {
-            $tokenData = ['username' => $user->username, 'email' => $user->email];
-            $accessToken = $this->jwtManager->createToken($tokenData);
-            $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-            return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+    /**
+     * @throws CredentialsException
+     */
+    public function signIn($email, $password): ?array
+    {
+        try {
+            $user = $this->authProvider->verifyCredentials($email, $password);
+            if ($user) {
+                $tokenData = ['username' => $user->username, 'email' => $user->email];
+                $accessToken = $this->jwtManager->createToken($tokenData);
+                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
+                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+            }
+            return null;
+        } catch (CredentialsException) {
+            throw new CredentialsException();
         }
-        return null;
     }
 
     public function validate($accessToken) {
@@ -28,32 +42,43 @@ class JWTAuthService
         if ($decodedToken && isset($decodedToken['upr'])) {
             return $decodedToken['upr'];
         }
-        return null;
+        return new TokenException('Invalid access token');
     }
 
-    public function signup($username, $email, $password) {
+    /**
+     * @throws UserException
+     */
+    public function signup($username, $email, $password): UserDTO
+    {
 
-        $existingUser = $this->authProvider->getUserByEmail($email);
-        if ($existingUser) {
-            return null;
-        }
-        $newUser = $this->authProvider->createUser($username, $email, $password);
-        return $newUser;
-    }
-
-    public function activate($activationToken) {
-
-        $user = $this->authProvider->verifyActivationToken($activationToken);
-
-        if ($user) {
-            $succes = $this->authProvider->activateUserAccount($user->id);
-
-            if ($succes) {
-                return true;
-            } else {
-                return false;
+        try {
+            $user = $this->authProvider->createUser($username, $email, $password);
+            if ($user) {
+                $tokenData = ['username' => $user->username, 'email' => $user->email];
+                $accessToken = $this->jwtManager->createToken($tokenData);
+                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
+                $user->access_token = $accessToken;
+                $user->refresh_token = $refreshToken;
+                $user->save();
+                return $this->authProvider->getAuthenticatedUserProfile($user->username, $user->email, $refreshToken);
             }
+            throw new UserException('Error during user creation');
+        } catch (UserException) {
+            throw new UserException();
         }
-        return false;
+
+    }
+
+    /**
+     * @throws UserException
+     */
+    public function activate($activationToken): void
+    {
+        try {
+            $user = $this->authProvider->verifyActivationToken($activationToken);
+            $user ? $this->authProvider->activateUserAccount($user->email) : throw new UserException('Invalid activation token');
+        } catch (UserException) {
+            throw new UserException();
+        }
     }
 }

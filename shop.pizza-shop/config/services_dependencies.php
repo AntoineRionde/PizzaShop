@@ -14,7 +14,7 @@ return [
         return new CatalogService();
     },
 
-    'order.logger' => function(ContainerInterface $container ) {
+    'order.logger' => function(ContainerInterface $container) {
         $logger = new Logger($container->get('log.order.name'));
         $logger->pushHandler(new StreamHandler($container->get('log.order.file'), $container->get('log.order.level')));
         return $logger;
