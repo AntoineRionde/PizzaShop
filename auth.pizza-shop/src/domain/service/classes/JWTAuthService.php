@@ -3,12 +3,12 @@
 namespace pizzashop\auth\api\domain\service\classes;
 
 use pizzashop\auth\api\domain\dto\auth\UserDTO;
-use pizzashop\auth\api\domain\entities\auth\User;
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
 use pizzashop\auth\api\domain\exceptions\UserException;
+use pizzashop\auth\api\domain\service\interfaces\IJWTAuthService;
 
-class JWTAuthService
+class JWTAuthService implements IJWTAuthService
 {
     private AuthService $authProvider;
     private JWTManager $jwtManager;
@@ -66,19 +66,37 @@ class JWTAuthService
         } catch (UserException) {
             throw new UserException();
         }
-
     }
 
     /**
      * @throws UserException
      */
-    public function activate($activationToken): void
+    public function activate($activationToken) : bool {
+
+        $user = $this->authProvider->verifyActivationToken($activationToken);
+
+        if ($user) {
+            return $this->authProvider->activateUserAccount($user->id);
+        }
+        return false;
+    }
+
+    /**
+     * @throws TokenException
+     */
+    public function refresh($refreshToken): ?array
     {
         try {
-            $user = $this->authProvider->verifyActivationToken($activationToken);
-            $user ? $this->authProvider->activateUserAccount($user->email) : throw new UserException('Invalid activation token');
-        } catch (UserException) {
-            throw new UserException();
+            $user = $this->authProvider->verifyRefreshToken($refreshToken);
+            if ($user) {
+                $tokenData = ['username' => $user->username, 'email' => $user->email];
+                $accessToken = $this->jwtManager->createToken($tokenData);
+                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
+                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+            }
+            return null;
+        } catch (TokenException) {
+            throw new TokenException();
         }
     }
 }

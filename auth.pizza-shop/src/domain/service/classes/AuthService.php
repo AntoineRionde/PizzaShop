@@ -3,7 +3,7 @@
 namespace pizzashop\auth\api\domain\service\classes;
 
 use Carbon\Carbon;
-use PHPUnit\Framework\Exception;
+use Exception;
 use pizzashop\auth\api\domain\dto\auth\UserDTO;
 use pizzashop\auth\api\domain\entities\auth\User;
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
@@ -106,11 +106,11 @@ class AuthService implements IAuth
 
     public function register($username, $email, $password)
     {
-        // TODO: Implement register() method.
+        // TODO
     }
 
     public function activate($refreshToken)
     {
-        // TODO: Implement activate() method.
+        // TODO
     }
 }
