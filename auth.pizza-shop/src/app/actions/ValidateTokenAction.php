@@ -7,13 +7,13 @@ use pizzashop\auth\api\domain\service\classes\JWTAuthService;
 use pizzashop\auth\api\domain\service\classes\JWTManager;
 use Psr\Container\ContainerInterface;
 
-class ValidateTokenAction
+class ValidateTokenAction extends AbstractAction
 {
     private JWTAuthService $jwtAuthService;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->jwtAuthService = $container->get('jwtAuthService');
+        $this->jwtAuthService = $container->get('jwtauth.service');
     }
 
     public function __invoke($request, $response, $args)
