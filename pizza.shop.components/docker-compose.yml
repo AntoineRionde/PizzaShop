@@ -102,6 +102,7 @@ services:
        - '1445:443'
     volumes:
       - ../gateway.pizza-shop:/var/www
+      - ../gateway.pizza-shop/public:/var/www/html
     working_dir: /var/www/
     networks:
       pizza-shop.net:
