@@ -93,7 +93,7 @@ class AuthService implements IAuth
     /**
      * @throws UserException
      */
-    public function getAuthenticatedUserProfile($username, $email, $refreshToken) : User
+    public function getAuthenticatedUserProfile($email) : User
     {
         try {
             return $this->getUserByEmail($email);

@@ -61,7 +61,7 @@ class JWTAuthService implements IJWTAuthService
                 $user->access_token = $accessToken;
                 $user->refresh_token = $refreshToken;
                 $user->save();
-                return $this->authProvider->getAuthenticatedUserProfile($user->username, $user->email, $refreshToken);
+                return $this->authProvider->getAuthenticatedUserProfile($user->email);
             }
             throw new UserException('Error during user creation');
         } catch (UserException) {

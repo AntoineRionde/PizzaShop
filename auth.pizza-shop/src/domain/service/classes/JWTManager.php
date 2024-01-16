@@ -36,13 +36,13 @@ class JWTManager
             "upr" => $data
         );
 
-        return JWT::encode($payload, $this->secretKey, 'HS256');
+        return JWT::encode($payload, $this->secretKey, 'HS512');
     }
 
     public function validateToken($token) : array | string
     {
         try {
-            $token = JWT::decode($token, new Key($this->secretKey, 'HS256'));
+            $token = JWT::decode($token, new Key($this->secretKey, 'HS512'));
             return $token->payload['upr'];
         } catch (ExpiredException|SignatureInvalidException|BeforeValidException|UnexpectedValueException $e) {
             return $e->getMessage();

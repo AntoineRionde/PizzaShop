@@ -2,11 +2,10 @@
 
 namespace pizzashop\auth\api\app\actions;
 
-
+use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\service\classes\AuthService;
-use pizzashop\auth\api\domain\service\classes\JWTAuthService;
 use pizzashop\auth\api\domain\service\classes\JWTManager;
-use Slim\Routing\RouteContext;
+use Psr\Container\ContainerInterface;
 
 
 class SigninAction extends AbstractAction
@@ -15,31 +14,38 @@ class SigninAction extends AbstractAction
     private JWTManager $jwtManager;
     private AuthService $authProvider;
 
-    public function __construct($jwtManager, $authProvider)
+    public function __construct(ContainerInterface $container)
     {
-        $this->jwtManager = $jwtManager;
-        $this->authProvider = $authProvider;
+        $this->authProvider = $container->get('auth.service');
+        $this->jwtManager = $container->get('jwtmanager.service');
+
     }
 
+    /**
+     * @throws CredentialsException
+     */
     public function __invoke($request, $response, $args)
     {
         $h = $request->getHeader('Authorization')[0];
         $tokenstring = sscanf($h, "Basic %s")[0];
+        $tokenstring = base64_decode($tokenstring);
+        $tokenstring = explode(':', $tokenstring);
+        $email = $tokenstring[0];
+        $password = $tokenstring[1];
 
-        $payload = $this->jwtManager->validateToken($tokenstring);
-
-        if (isset($payload->email)) {
-            $user = $this->authProvider->getUserByEmail($payload->email);
-            if ($user) {
-                $tokenData = ['username' => $user->username, 'email' => $user->email];
-                $accessToken = $this->jwtManager->createToken($tokenData);
-                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-                $tokens = ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
-                return $response->withJson($tokens, 200);
+        if (isset ($email)) {
+            try {
+                $this->authProvider->verifyCredentials($email, $password);
+                $user = $this->authProvider->getUserByEmail($email);
+                $token = $this->jwtManager->createToken($user);
+                $response->getBody()->write(json_encode(['token' => $token]));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            } catch (CredentialsException) {
+                $response->getBody()->write(json_encode(['error' => 'Invalid credentials']));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
             }
-            return $response->withJson(['error' => 'Invalid or expired token'], 401);
         }
-
+        $response->getBody()->write(json_encode(['error' => 'Invalid credentials']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
-
 }

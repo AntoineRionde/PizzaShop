@@ -7,7 +7,6 @@ use Illuminate\Database\Capsule\Manager as Eloquent;
 $settings = require_once __DIR__ . '/settings.php';
 $actions = require_once __DIR__ . '/actions_dependencies.php';
 $services = require_once __DIR__.'/services_dependencies.php';
-$actions = require_once __DIR__.'/actions_dependencies.php';
 
 try {
     $eloquent = new Eloquent();
@@ -22,8 +21,6 @@ $builder = new ContainerBuilder();
 $builder->addDefinitions($settings);
 $builder->addDefinitions($actions);
 $builder->addDefinitions($services);
-$builder->addDefinitions($actions);
-
 try {
     $c = $builder->build();
     $app = AppFactory::createFromContainer($c);
