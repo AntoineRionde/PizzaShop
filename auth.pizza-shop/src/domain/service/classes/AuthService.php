@@ -13,16 +13,15 @@ use Random\RandomException;
 
 class AuthService implements IAuth
 {
-    /**
-     * @throws CredentialsException
-     */
+
     public function verifyCredentials($email, $password)
     {
         $user = User::where('email', $email)->first();
+        var_dump($user);
         if ($user && password_verify($password, $user->password)) {
             return $user;
         }
-        throw new CredentialsException();
+        // throw new CredentialsException('Invalid credentials');
     }
 
     /**

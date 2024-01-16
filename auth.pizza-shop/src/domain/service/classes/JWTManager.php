@@ -8,6 +8,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 use UnexpectedValueException;
+use function DI\get;
 
 
 class JWTManager
@@ -17,8 +18,8 @@ class JWTManager
 
     public function __construct($secretKey, $tokenLifetime)
     {
-        $this->secretKey = $secretKey;
-        $this->tokenLifetime = $tokenLifetime;
+        $this->secretKey = getenv('JWT_SECRET');
+        $this->tokenLifetime = getenv('JWT_LIFETIME');
     }
 
     public function createToken($data): string
