@@ -10,8 +10,8 @@ services:
     image: 'canals/php:latest'
     env_file: ./shop.env
     ports:
-      - '40501:80'
-      - '40502:443'
+      - '2080:80' #40501
+      - '1443:443' #40502
     volumes:
       - ../shop.pizza-shop/public:/var/www/html
       - ../shop.pizza-shop:/var/www
@@ -33,7 +33,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     env_file: ./shop.env
     ports:
-      - '40503:3306'
+      - '3307:3306' # 40503
     networks:
       - pizza-shop.net
     volumes:
@@ -47,7 +47,7 @@ services:
     image: 'postgres:latest'
     env_file: ./cat.env
     ports:
-      - '40504:5432'
+      - '3308:5432' # 40504
     networks:
       - pizza-shop.net
     volumes:
@@ -60,7 +60,7 @@ services:
     image: adminer
     command: php -S 0.0.0.0:8080 -t /var/www/html
     ports:
-      - '8082:8080' ## 40510
+      - '8081:8080' ## 40510
     networks:
       - pizza-shop.net
 
@@ -73,8 +73,8 @@ services:
     image: 'canals/php:latest'
     env_file: ./auth.env
     ports:
-      - '2080:80' ## 40506
-      - '1443:443' ## 40507
+      - '2082:80' ## 40506
+      - '1444:443' ## 40507
     volumes:
       - ../auth.pizza-shop/public:/var/www/html
       - ../auth.pizza-shop:/var/www
@@ -91,7 +91,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     env_file: ./auth.env
     ports:
-      - '3307:3306' ## 40508
+      - '3308:3306' ## 40508
     networks:
       - pizza-shop.net
     volumes:
@@ -102,8 +102,8 @@ services:
       image: 'canals/php:latest'
       env_file: ./gate.env
       ports:
-        - '2081:80'
-        - '1445:443'
+        - '2081:80'  # 40505
+        - '1445:443' # 40510
       volumes:
         - ../gateway.pizza-shop:/var/www
         - ../gateway.pizza-shop/public:/var/www/html
