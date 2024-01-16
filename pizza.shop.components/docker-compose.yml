@@ -61,11 +61,11 @@ services:
     networks:
       - pizza-shop.net
 
-######################################
-###  AUTH Service : service d'authentification JWT
-###  api api.auth : auth, check, refresh de token JWT
-###  utilise sa propre base de données
-######################################
+  ######################################
+  ###  AUTH Service : service d'authentification JWT
+  ###  api api.auth : auth, check, refresh de token JWT
+  ###  utilise sa propre base de données
+  ######################################
   api.pizza-auth:
     image: 'canals/php:latest'
     env_file: ./auth.env
@@ -93,6 +93,24 @@ services:
       - pizza-shop.net
     volumes:
       - ../auth.pizza-shop/sql:/var/sql
+
+  gateway.pizza-shop:
+      image: 'canals/php:latest'
+      env_file: ./gate.env
+      ports:
+        - '2081:80'
+        - '1445:443'
+      volumes:
+        - ../gateway.pizza-shop:/var/www
+        - ../gateway.pizza-shop/public:/var/www/html
+      working_dir: /var/www/
+      networks:
+        pizza-shop.net:
+          aliases:
+            - api.pizza-shop.local
+      depends_on:
+        - api.pizza-shop
+        - api.pizza-auth
 
  
 
