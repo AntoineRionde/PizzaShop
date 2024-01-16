@@ -24,18 +24,31 @@ class JWTAuthService implements IJWTAuthService
      */
     public function signIn($email, $password): ?array
     {
-        try {
-            $user = $this->authProvider->verifyCredentials($email, $password);
-            if ($user) {
-                $tokenData = ['username' => $user->username, 'email' => $user->email];
-                $accessToken = $this->jwtManager->createToken($tokenData);
-                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
-            }
-            return null;
-        } catch (CredentialsException) {
-            throw new CredentialsException();
+//        try {
+//            $user = $this->authProvider->verifyCredentials($email, $password);
+//            if ($user) {
+//                $tokenData = ['username' => $user->username, 'email' => $user->email];
+//                $accessToken = $this->jwtManager->createToken($tokenData);
+//                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
+//
+//                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+//            }
+//            return null;
+//        } catch (CredentialsException) {
+//            throw new CredentialsException();
+//        }
+        $refreshToken = $this->authProvider->verifyCredentials($email, $password);
+        var_dump($refreshToken);
+        if ($refreshToken) {
+            $data = [
+                'email' => $refreshToken->email,
+                'password' => $refreshToken->password,
+            ];
+            $accessToken = $this->jwtManager->createToken($data);
+
+            return ['access_token' => $accessToken, 'refresh_token' => $refreshToken->refresh_token];
         }
+        return null;
     }
 
     public function validate($accessToken) {
