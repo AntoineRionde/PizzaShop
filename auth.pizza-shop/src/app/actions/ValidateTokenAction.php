@@ -5,15 +5,22 @@ namespace pizzashop\auth\api\app\actions;
 use pizzashop\auth\api\domain\service\classes\AuthService;
 use pizzashop\auth\api\domain\service\classes\JWTAuthService;
 use pizzashop\auth\api\domain\service\classes\JWTManager;
+use Psr\Container\ContainerInterface;
 
-class ValidateTokenAction
+class ValidateTokenAction extends AbstractAction
 {
+    private JWTAuthService $jwtAuthService;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->jwtAuthService = $container->get('jwtauth.service');
+    }
+
     public function __invoke($request, $response, $args)
     {
-        $h = $request->getHeader('Authorization')[0];
-        $tokenstring = sscanf($h, "Bearer %s")[0];
-        $jwtAuthService = new JWTAuthService(new AuthService(), new JWTManager(getenv('JWT_SECRET'), 3600));
-        $userProfile = $jwtAuthService->validate($tokenstring);
+        $h = $request->getHeader('Authorization')[0] ;
+        $tokenstring = sscanf($h, "Bearer %s")[0] ;
+        $userProfile = $this->jwtAuthService->validate($tokenstring);
         if ($userProfile) {
             return $response->withJson($userProfile, 200);
         }

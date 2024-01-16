@@ -3,6 +3,7 @@
 namespace pizzashop\auth\api\domain\service\classes;
 
 use pizzashop\auth\api\domain\dto\auth\UserDTO;
+use pizzashop\auth\api\domain\entities\auth\User;
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
 use pizzashop\auth\api\domain\exceptions\UserException;
@@ -48,7 +49,7 @@ class JWTAuthService implements IJWTAuthService
     /**
      * @throws UserException
      */
-    public function signup($username, $email, $password): UserDTO
+    public function signup($username, $email, $password): User
     {
 
         try {

@@ -9,7 +9,7 @@ use pizzashop\auth\api\domain\service\classes\JWTManager;
 use Slim\Routing\RouteContext;
 
 
-class SigninAction
+class SigninAction extends AbstractAction
 {
 
     private JWTManager $jwtManager;

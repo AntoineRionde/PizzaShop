@@ -27,7 +27,7 @@ class JWTManager
         $expire = $issuedAt + $this->tokenLifetime;
 
         $payload = array(
-            "iss" => "http://localhost:8081",
+            "iss" => "http://localhost:2080",
             "iat" => $issuedAt,
             "exp" => $expire,
             "upr" => $data

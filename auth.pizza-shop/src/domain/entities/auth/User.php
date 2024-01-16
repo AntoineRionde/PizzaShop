@@ -7,7 +7,6 @@ use pizzashop\auth\api\domain\dto\auth\UserDTO;
 class User extends Model
 {
 
-    protected $connection = 'users';
     protected $table = 'users';
     protected $primaryKey = 'email';
     public $timestamps = false;
