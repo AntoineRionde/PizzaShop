@@ -1,51 +1,55 @@
 <?php
 
+namespace pizzashop\gateway\app\action;
 
-namespace pizzashop\gateway\app\actions;
 
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Container\ContainerInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-class AccessOrderAction extends \pizzashop\shop\app\actions\AbstractAction
+class AccessOrderAction extends AbstractAction
 {
-    private Client $httpClient;
-
     public function __construct(ContainerInterface $container)
     {
-        $this->httpClient = new Client();
+        parent::__construct($container);
     }
 
-    public function __invoke($request, $response, $args)
+    public function __invoke(Request $request, Response $response, array $args): Response|\Slim\Psr7\Message
     {
         $response = $this->addCorsHeaders($response);
 
-        var_dump("lmklkml");
-
         try {
 
-            $orderServiceUrl = 'http://api.pizza-shop';
-            $orderResponse = $this->httpClient->get($orderServiceUrl . '/orders/' . $args['id_order']);
-            $order = json_decode($orderResponse->getBody()->getContents(), true);
-            $links = array(
-                "self" => array(
-                    "href" => "/commandes/" . $args['id_order'] . "/"
-                ),
-                "valider" => array(
-                    "href" => "/commandes/" . $args['id_order']
-                )
-            );
+            $orderApiResponse = $this->sendGetRequest('pizza-shop.commande.db:3307/api/orders/' . $args['id_order']);
 
-            $order = $order + $links;
-            $order_json = json_encode($order);
-            $response->getBody()->write($order_json);
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            if ($orderApiResponse['status'] == 'success') {
+                $orderData = $orderApiResponse['data'];
 
+                $links = array(
+                    "self" => array(
+                        "href" => "/commandes/" . $args['id_order'] . "/"
+                    ),
+                    "valider" => array(
+                        "href" => "/commandes/" . $args['id_order']
+                    )
+                );
+
+                $order = $orderData + $links;
+                $order_json = json_encode($order);
+                $response->getBody()->write($order_json);
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            } else {
+                throw new Exception('Failed to fetch order details.');
+            }
+
+        } catch (RequestException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getResponse()->getStatusCode());
         } catch (Exception $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
-        } catch (GuzzleException $e) {
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
     }
 }
