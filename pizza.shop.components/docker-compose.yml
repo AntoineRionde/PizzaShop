@@ -7,7 +7,7 @@ services:
   # service api.pizza-shop : api pour la prise de commandes
   #
   api.pizza-shop:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file: ./shop.env
     ports:
       - '2080:80' #40501
@@ -85,7 +85,6 @@ services:
           - auth.pizza-shop.local
     depends_on:
       - pizza-shop.auth.db
-
   pizza-shop.auth.db:
     image: 'mariadb:latest'
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
@@ -116,5 +115,17 @@ services:
         - api.pizza-shop
         - api.pizza-auth
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ./rabbitmq_dir:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=@admin1#!
  
 
