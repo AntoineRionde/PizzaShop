@@ -38,6 +38,8 @@ services:
       - pizza-shop.net
     volumes:
       - ../shop.pizza-shop/sql:/var/sql
+      - ../shop.pizza-shop/sql/order:/docker-entrypoint-initdb.d
+
 
   # service sql pour le catalogue des pizzas -
   # utilisé par l'api order
@@ -50,6 +52,7 @@ services:
       - pizza-shop.net
     volumes:
       - ../shop.pizza-shop/sql:/var/sql'
+      - ../shop.pizza-shop/sql/catalog:/docker-entrypoint-initdb.d
   #
   # service administration des bases sql
   #
@@ -93,6 +96,7 @@ services:
       - pizza-shop.net
     volumes:
       - ../auth.pizza-shop/sql:/var/sql
+      - ../auth.pizza-shop/sql:/docker-entrypoint-initdb.d
 
   gateway.pizza-shop:
       image: 'canals/php:latest'
