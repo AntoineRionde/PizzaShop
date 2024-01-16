@@ -13,13 +13,15 @@ use function DI\get;
 
 class JWTManager
 {
-    private $secretKey;
-    private $tokenLifetime;
+    private string|array|false $secretKey;
+    private string|array|false $tokenLifetime;
+    private string|array|false $baseUrl;
 
-    public function __construct($secretKey, $tokenLifetime)
+    public function __construct()
     {
         $this->secretKey = getenv('JWT_SECRET');
         $this->tokenLifetime = getenv('JWT_LIFETIME');
+        $this->baseUrl = getenv('BASE_URL');
     }
 
     public function createToken($data): string
@@ -28,7 +30,7 @@ class JWTManager
         $expire = $issuedAt + $this->tokenLifetime;
 
         $payload = array(
-            "iss" => "http://localhost:2080",
+            "iss" => $this->baseUrl,
             "iat" => $issuedAt,
             "exp" => $expire,
             "upr" => $data
