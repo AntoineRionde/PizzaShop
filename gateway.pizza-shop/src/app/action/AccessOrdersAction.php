@@ -2,14 +2,12 @@
 
 namespace pizzashop\gateway\app\action;
 
-
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Container\ContainerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-
-class AccessOrderAction extends AbstractAction
+class AccessOrdersAction extends AbstractAction
 {
     public function __construct(ContainerInterface $container)
     {
@@ -21,23 +19,13 @@ class AccessOrderAction extends AbstractAction
         $response = $this->addCorsHeaders($response);
 
         try {
+            $ordersData = $this->sendGetRequest('http://api.pizza-shop:80/order');
 
-            $orderData = $this->sendGetRequest('http://api.pizza-shop:80/order/' . $args['id_order']);
 
-            $links = array(
-                "self" => array(
-                    "href" => "/commandes/" . $args['id_order'] . "/"
-                ),
-                "valider" => array(
-                    "href" => "/commandes/" . $args['id_order']
-                )
-            );
 
-            $order = $orderData + $links;
-            $order_json = json_encode($order);
-            $response->getBody()->write($order_json);
+            $orders_json = json_encode($ordersData);
+            $response->getBody()->write($orders_json);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-
 
         } catch (RequestException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));

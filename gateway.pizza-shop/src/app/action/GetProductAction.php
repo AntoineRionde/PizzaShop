@@ -19,18 +19,12 @@ class GetProductAction extends AbstractAction
         $response = $this->addCorsHeaders($response);
 
         try {
-            $productApiResponse = $this->sendGetRequest('http://pizza-shop.catalogue.db:3308/api/products/' . $args['id']);
+            $productData = $this->sendGetRequest('http://api.pizza-shop:80/product/' . $args['id']);
 
+            $product_json = json_encode($productData);
+            $response->getBody()->write($product_json);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
 
-            if ($productApiResponse['status'] === 'success') {
-                $product = $productApiResponse['data'];
-
-                $product_json = json_encode($product);
-                $response->getBody()->write($product_json);
-                return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-            } else {
-                throw new Exception('Product not found');
-            }
         } catch (Exception $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(404);

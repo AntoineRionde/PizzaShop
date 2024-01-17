@@ -28,14 +28,16 @@ class AuthService implements IAuth
     /**
      * @throws TokenException
      */
-    public function verifyRefreshToken($refreshToken)
-    {
+    public function verifyRefreshToken($refreshToken) {
         return User::where('refresh_token', $refreshToken)->first() ?: throw new TokenException('Invalid refresh token');
-    }
-
-    public function getUserByEmail($email)
-    {
-        return User::where('email', $email)->first() ?: null;
+        /*$user = User::where('refresh_token', $refreshToken)
+            ->where('refresh_token_expiration_date', '>', Carbon::now())
+            ->first();
+        if ($user) {
+            return $user;
+        } else {
+            throw new TokenException();
+        }*/
     }
 
     /**
@@ -93,13 +95,18 @@ class AuthService implements IAuth
     /**
      * @throws UserException
      */
-    public function getAuthenticatedUserProfile($username, $email, $refreshToken) : User
+    public function getAuthenticatedUserProfile($email): User
     {
         try {
             return $this->getUserByEmail($email);
         } catch (Exception) {
             throw new UserException("Error during user profile retrieval");
         }
+    }
+
+    public function getUserByEmail($email)
+    {
+        return User::where('email', $email)->first() ?: null;
     }
 
     public function register($username, $email, $password)

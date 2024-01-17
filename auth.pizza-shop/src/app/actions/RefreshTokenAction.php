@@ -26,12 +26,11 @@ class RefreshTokenAction extends AbstractAction
 
         $newTokens = $this->jwtAuthService->refresh($refreshToken);
 
-        $token = "access:".$newTokens['access_token']." refresh:".$newTokens['refresh_token'];
         if ($newTokens) {
-            $response = $response->withHeader('Authorization', 'Bearer ' . $token);
+            $response->getBody()->write(json_encode(['access_token' => $newTokens['access_token'], 'refresh_token' => $newTokens['refresh_token']]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         }
-
+        $response->getBody()->write(json_encode(['error' => 'Invalid or expired token']));
         return $response->withHeader('error', 'Invalid or expired token')->withStatus(401);
     }
 }

@@ -2,10 +2,14 @@
 
 namespace pizzashop\auth\api\app\actions;
 
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
 use pizzashop\auth\api\domain\service\classes\AuthService;
 use pizzashop\auth\api\domain\service\classes\JWTAuthService;
 use pizzashop\auth\api\domain\service\classes\JWTManager;
 use Psr\Container\ContainerInterface;
+use UnexpectedValueException;
 
 class ValidateTokenAction extends AbstractAction
 {
@@ -20,10 +24,17 @@ class ValidateTokenAction extends AbstractAction
     {
         $h = $request->getHeader('Authorization')[0] ;
         $tokenstring = sscanf($h, "Bearer %s")[0] ;
-        $userProfile = $this->jwtAuthService->validate($tokenstring);
-        if ($userProfile) {
-            return $response->withJson($userProfile, 200);
+        try {
+            $userProfile = $this->jwtAuthService->validate($tokenstring);
+            if ($userProfile) {
+                $response->getBody()->write(json_encode(['username' => $userProfile[0], 'email' => $userProfile[1]]));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            }
+        } catch (SignatureInvalidException|BeforeValidException|ExpiredException|UnexpectedValueException $e) {
+            $response->getBody()->write(json_encode(['error' => $e]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
         }
-        return $response->withJson(['error' => 'Invalid or expired token'], 401);
+        $response->getBody()->write(json_encode(['error' => 'Invalid or expired token']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
     }
 }

@@ -5,6 +5,8 @@ namespace pizzashop\gateway\app\action;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use Psr\Container\ContainerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -38,5 +40,16 @@ abstract class AbstractAction
         return json_decode($response->getBody(), true);
     }
 
+    /**
+     * @throws GuzzleException
+     */
+    protected function sendPostRequest(string $url, array $data): array
+    {
+        $response = $this->httpClient->post($url, [
+            'json' => $data,
+        ]);
+
+        return json_decode($response->getBody(), true);
+    }
 
 }
