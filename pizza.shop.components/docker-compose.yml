@@ -23,6 +23,8 @@ services:
     depends_on:
       - pizza-shop.commande.db
       - pizza-shop.catalogue.db
+    command: >
+      bash -c "composer install && composer update && apache2-foreground"
 
 
 
@@ -85,6 +87,8 @@ services:
           - auth.pizza-shop.local
     depends_on:
       - pizza-shop.auth.db
+    command: >
+      bash -c "composer install && composer update && apache2-foreground"
 
   pizza-shop.auth.db:
     image: 'mariadb:latest'
@@ -115,6 +119,7 @@ services:
       depends_on:
         - api.pizza-shop
         - api.pizza-auth
-
+      command: >
+        bash -c "composer install && composer update && apache2-foreground"
  
 
