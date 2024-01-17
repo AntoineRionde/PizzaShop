@@ -36,16 +36,25 @@ class JWTManager
             "upr" => $data
         );
 
-        return JWT::encode($payload, $this->secretKey, 'HS512');
+        return JWT::encode($payload, $this->secretKey, 'HS256');
     }
 
-    public function validateToken($token) : array | string
+    /**
+     * @throws SignatureInvalidException|BeforeValidException|ExpiredException|UnexpectedValueException
+     */
+    public function validateToken($token) : array
     {
         try {
-            $token = JWT::decode($token, new Key($this->secretKey, 'HS512'));
-            return $token->payload['upr'];
-        } catch (ExpiredException|SignatureInvalidException|BeforeValidException|UnexpectedValueException $e) {
-            return $e->getMessage();
+            $token = JWT::decode($token, new Key($this->secretKey, 'HS256'));
+            return [$token->upr->username, $token->upr->email];
+        } catch (SignatureInvalidException) {
+            throw new SignatureInvalidException("Invalid signature");
+        } catch (BeforeValidException) {
+            throw new BeforeValidException("Token is not valid yet");
+        } catch (ExpiredException) {
+            throw new ExpiredException("Token has expired");
+        } catch (UnexpectedValueException) {
+            throw new UnexpectedValueException("Unexpected value");
         }
     }
 }
