@@ -30,13 +30,11 @@ class CreateOrderAction extends AbstractAction
             if ($request->getMethod() !== 'POST') {
                 return $response->withHeader('Location', '/')->withStatus(302);
             }
-            // Etendre l'action de création d'une commande dans l'api commandes pour vérifier la présence d'un
-            //token JWT. En cas d'absence, retourner une réponse d'erreur avec un code 401.
             $token = $request->getHeader('Authorization')[0];
             if (empty($token)) {
                 $response->getBody()->write(json_encode(['error' => 'Token absent']));
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-            } else // sinon vérifier la validité du token. En cas d'erreur, retourner une réponse d'erreur avec un code 401. {
+            } else
             {
                 $client = new Client([
                     'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:16584',

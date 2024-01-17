@@ -20,22 +20,22 @@ return function( App $app):void {
     $app->post('/order[/]', CreateOrderAction::class)
         ->setName('create_order');
 
-    $app->get('/orders[/]', AccessOrdersAction::class)
+    $app->get('/order[/]', AccessOrdersAction::class)
         ->setName('access_orders');
 
-    $app->get('/orders/{id_order}[/]', AccessOrderAction::class)
+    $app->get('/order/{id_order}[/]', AccessOrderAction::class)
         ->setName('access_order');
 
-    $app->patch('/orders/{id_order}[/]', ValidateOrderAction::class)
+    $app->patch('/order/{id_order}[/]', ValidateOrderAction::class)
         ->setName('validate_order');
 
-    $app->get('/products[/]', GetProductsAction::class)
+    $app->get('/product[/]', GetProductsAction::class)
         ->setName('get_products');
 
     $app->get('/product/{id}[/]', GetProductAction::class)
         ->setName('get_product');
 
-    $app->get('/categories/{id_category}/products[/]', GetProductsByCategoryAction::class)
+    $app->get('/categorie/{id_category}/product[/]', GetProductsByCategoryAction::class)
         ->setName('get_products_by_categories');
 
     $app->get("/signin[/]", SigninAction::class)
