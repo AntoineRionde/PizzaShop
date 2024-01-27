@@ -12,7 +12,7 @@ CREATE TABLE `users` (
                          `active` tinyint(4) NOT NULL DEFAULT 0,
                          `activation_token` varchar(64) DEFAULT NULL,
                          `activation_token_expiration_date` timestamp NULL DEFAULT NULL,
-                         `refresh_token` varchar(64) DEFAULT NULL,
+                         `refresh_token` varchar(512) DEFAULT NULL,
                          `refresh_token_expiration_date` timestamp NULL DEFAULT NULL,
                          `reset_passwd_token` varchar(64) DEFAULT NULL,
                          `reset_passwd_token_expiration_date` timestamp NULL DEFAULT NULL,
