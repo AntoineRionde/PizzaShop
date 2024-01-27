@@ -30,14 +30,10 @@ class AuthService implements IAuth
      */
     public function verifyRefreshToken($refreshToken) {
         return User::where('refresh_token', $refreshToken)->first() ?: throw new TokenException('Invalid refresh token');
-        /*$user = User::where('refresh_token', $refreshToken)
+        /*$user = User::where('refresh_token', $refresh_token)
             ->where('refresh_token_expiration_date', '>', Carbon::now())
             ->first();
-        if ($user) {
-            return $user;
-        } else {
-            throw new TokenException();
-        }*/
+        return $user ?: throw new TokenException('Invalid refresh token');*/
     }
 
     /**
@@ -66,14 +62,14 @@ class AuthService implements IAuth
     }
 
     /**
-     * @throws UserException
+     * @throws TokenException
      */
     public function verifyActivationToken($activationToken)
     {
         $user = User::where('activation_token', $activationToken)
             ->where('activation_token_expiration_date', '>', Carbon::now())
             ->first();
-        return $user ?: throw new UserException('Invalid activation token');
+        return $user ?: throw new TokenException('Invalid activation token');
     }
 
     /**
