@@ -3,6 +3,7 @@
 namespace pizzashop\auth\api\domain\service\classes;
 
 
+use Carbon\Carbon;
 use pizzashop\auth\api\domain\entities\auth\User;
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
@@ -14,11 +15,14 @@ class JWTAuthService implements IJWTAuthService
 {
     private AuthService $authProvider;
     private JWTManager $jwtManager;
+    private string|array|false $tokenLifetime;
 
     public function __construct($authProvider, $jwtManager)
     {
         $this->authProvider = $authProvider;
         $this->jwtManager = $jwtManager;
+        $this->tokenLifetime = getenv('JWT_LIFETIME');
+
     }
 
     /**
@@ -26,24 +30,30 @@ class JWTAuthService implements IJWTAuthService
      */
     public function signIn($email, $password): ?array
     {
-        try {
-            $user = $this->authProvider->verifyCredentials($email, $password);
-            if ($user) {
-                $tokenData = ['username' => $user->username, 'email' => $user->email];
-                $accessToken = $this->jwtManager->createToken($tokenData);
-                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
-            }
-            return null;
-        } catch (CredentialsException) {
-            throw new CredentialsException();
+        $user = $this->authProvider->verifyCredentials($email, $password);
+        if ($user) {
+            return $this->createTokenPair($user);
         }
+        return null;
     }
 
-    public function validate($accessToken)
+    /**
+     * @throws RandomException
+     */
+    private function createTokenPair(User $user): array
     {
-        $decodedToken = $this->jwtManager->validateToken($accessToken);
-        return $decodedToken ?: null;
+        $tokenData = ['username' => $user->username, 'email' => $user->email];
+        $accessToken = $this->jwtManager->createToken($tokenData);
+        $refreshToken = $this->jwtManager->createToken(bin2hex(random_bytes(10)));
+        $user->refresh_token = $refreshToken;
+        $user->refresh_token_expiration_date = Carbon::now()->addMinutes($this->tokenLifetime)->toDateTimeString();
+        $user->save();
+        return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+    }
+
+    public function validate($accessToken): ?array
+    {
+        return $this->jwtManager->validateToken($accessToken) ?: null;
     }
 
     /**
@@ -53,12 +63,7 @@ class JWTAuthService implements IJWTAuthService
     {
         $user = $this->authProvider->createUser($username, $email, $password);
         if ($user) {
-            $tokenData = ['username' => $user->username, 'email' => $user->email];
-            $accessToken = $this->jwtManager->createToken($tokenData);
-            $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-            $user->access_token = $accessToken;
-            $user->refresh_token = $refreshToken;
-            $user->save();
+            $this->createTokenPair($user);
             return $this->authProvider->getAuthenticatedUserProfile($user->email);
         }
         throw new UserException('Error during user creation');
@@ -66,12 +71,11 @@ class JWTAuthService implements IJWTAuthService
 
     /**
      * @throws UserException
+     * @throws TokenException
      */
     public function activate($activationToken): bool
     {
-
         $user = $this->authProvider->verifyActivationToken($activationToken);
-
         if ($user) {
             return $this->authProvider->activateUserAccount($user->id);
         }
@@ -79,21 +83,14 @@ class JWTAuthService implements IJWTAuthService
     }
 
     /**
-     * @throws TokenException
+     * @throws TokenException|RandomException
      */
     public function refresh($refreshToken): ?array
     {
-        try {
-            $user = $this->authProvider->verifyRefreshToken($refreshToken);
-            if ($user) {
-                $tokenData = ['username' => $user->username, 'email' => $user->email];
-                $accessToken = $this->jwtManager->createToken($tokenData);
-                $refreshToken = $this->jwtManager->createToken(['refresh_token' => $user->refresh_token]);
-                return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
-            }
-            return null;
-        } catch (TokenException) {
-            throw new TokenException();
+        $user = $this->authProvider->verifyRefreshToken($refreshToken);
+        if ($user) {
+            return $this->createTokenPair($user);
         }
+        return null;
     }
 }

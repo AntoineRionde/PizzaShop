@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\app\actions;
 
 use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\service\classes\AuthService;
+use pizzashop\auth\api\domain\service\classes\JWTAuthService;
 use pizzashop\auth\api\domain\service\classes\JWTManager;
 use Psr\Container\ContainerInterface;
 
@@ -11,13 +12,11 @@ use Psr\Container\ContainerInterface;
 class SigninAction extends AbstractAction
 {
 
-    private JWTManager $jwtManager;
-    private AuthService $authProvider;
+    private JWTAuthService $JWTAuthService;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->authProvider = $container->get('auth.service');
-        $this->jwtManager = $container->get('jwtmanager.service');
+        $this->JWTAuthService = $container->get('jwtauth.service');
 
     }
 
@@ -35,10 +34,7 @@ class SigninAction extends AbstractAction
 
         if (isset ($email)) {
             try {
-                $this->authProvider->verifyCredentials($email, $password);
-                $user = $this->authProvider->getUserByEmail($email);
-                $token = $this->jwtManager->createToken($user);
-                $response->getBody()->write(json_encode(['token' => $token]));
+                $response->getBody()->write(json_encode($this->JWTAuthService->signIn($email, $password)));
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
             } catch (CredentialsException) {
                 $response->getBody()->write(json_encode(['error' => 'Invalid credentials']));

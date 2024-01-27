@@ -29,11 +29,10 @@ class AuthService implements IAuth
      * @throws TokenException
      */
     public function verifyRefreshToken($refreshToken) {
-        return User::where('refresh_token', $refreshToken)->first() ?: throw new TokenException('Invalid refresh token');
-        /*$user = User::where('refresh_token', $refresh_token)
+        $user = User::where('refresh_token', $refreshToken)
             ->where('refresh_token_expiration_date', '>', Carbon::now())
             ->first();
-        return $user ?: throw new TokenException('Invalid refresh token');*/
+        return $user ?: throw new TokenException('Invalid refresh token');
     }
 
     /**
