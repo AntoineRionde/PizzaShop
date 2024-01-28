@@ -1,5 +1,5 @@
-const knex = require('knex');
-const knexConfig = require('../configs/db.config.js');
+import knex from "knex";
+import knexConfig from '../configs/db.config.js'
 
 const db = knex(knexConfig);
 

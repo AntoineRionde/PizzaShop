@@ -1,4 +1,4 @@
-const CommandeService = require('../services/commandeService.js');
+import CommandeService from '../services/commandeService.js'
 
 class CommandeAction {
     constructor() {
