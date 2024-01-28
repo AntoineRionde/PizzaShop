@@ -6,8 +6,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "node ./src/server.js",
-    "watch": "NODE_ENV=development nodemon ./src/server/.js"
+    "start": "node index.js",
+    "watch": "NODE_ENV=development nodemon index.js"
   },
   "dependencies": {
     "compression": "^1.7.4",
