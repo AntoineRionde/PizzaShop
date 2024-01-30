@@ -1,20 +1,16 @@
 import CommandeService from '../services/commandeService.js'
 
-class CommandeAction {
-    constructor() {
-        this.commandeService = new CommandeService();
-    }
+const commandeService = new CommandeService();
 
-    async listerCommandes(req, res) {
+   const listerCommandes = async (req, res, next)=> {
         try {
-            const commandes = await this.commandeService.getCommandes();
-            console.log(commandes)
+            const commandes = await commandeService.getCommandes();
+            console.log(commandes);
             res.json(commandes);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-}
 
-export default CommandeAction;
+export default listerCommandes;
