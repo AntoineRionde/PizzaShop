@@ -8,6 +8,7 @@ class CommandeAction {
     async listerCommandes(req, res) {
         try {
             const commandes = await this.commandeService.getCommandes();
+            console.log(commandes)
             res.json(commandes);
         } catch (error) {
             console.error(error);
@@ -16,4 +17,4 @@ class CommandeAction {
     }
 }
 
-module.exports = CommandeAction;
+export default CommandeAction;

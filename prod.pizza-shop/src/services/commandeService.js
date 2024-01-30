@@ -9,4 +9,4 @@ class CommandeService {
     }
 }
 
-module.exports = CommandeService;
+export default CommandeService;

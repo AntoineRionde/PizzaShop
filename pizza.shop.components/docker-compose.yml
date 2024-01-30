@@ -132,7 +132,7 @@ services:
   pizza-shop.prod.db:
     image: 'mariadb:latest'
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
-    env_file: ./auth.env
+    env_file: ./prod.env
     ports:
       - '3310:3307' ## 40508
     networks:
@@ -147,15 +147,14 @@ services:
     networks:
       - pizza-shop.net
     working_dir: /usr/app
-    command: sh -c "npm i && npm run watch" #for development only
+    command: sh -c "npm i && npm run dev" #for development only
     #command: sh -c "npm i && npm start" #for production only
     volumes:
       - ../prod.pizza-shop:/usr/app
     ports:
       - '3333:3000'
-    environment:
-      - PORT= 3000
-      - NODE_ENV= development
+    env_file:
+      - prod.env
     depends_on:
       - pizza-shop.prod.db
 

@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-// Utiliser import() pour importer un module ESM de manière dynamique
+// Utiliser l'import dynamique avec await pour charger le module ESM
 const loadCommandeAction = async () => {
-    const { CommandeAction } = await import('../actions/commandeAction.js');
+    const { default: CommandeAction } = await import('../actions/CommandeAction.js');
     return new CommandeAction();
 };
 
@@ -20,4 +20,4 @@ router.get('/commandes', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router; // Utiliser 'export default' pour exporter le module

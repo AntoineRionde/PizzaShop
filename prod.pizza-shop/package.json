@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "start": "node index.js",
-    "watch": "NODE_ENV=development nodemon index.js"
+    "dev": "NODE_ENV=development nodemon index.js"
   },
   "dependencies": {
     "compression": "^1.7.4",
