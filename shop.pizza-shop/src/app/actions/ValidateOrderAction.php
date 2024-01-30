@@ -3,6 +3,7 @@
 namespace pizzashop\shop\app\actions;
 
 use Exception;
+use PhpAmqpLib\Message\AMQPMessage;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\exception\OrderRequestInvalidException;
 use pizzashop\shop\domain\service\classes\OrderService;
@@ -23,6 +24,17 @@ class ValidateOrderAction extends AbstractAction
 
         try {
             $this->os->validateOrder($args['id_order']);
+            // Connexion à RabbitMQ
+            $connection = new AMQPStreamConnection('rabbitmq', 5672, 'admin', '@admin1#!');
+            $channel = $connection->channel();
+
+            // Déclaration de la queue
+            $channel->queue_declare('nouvelles_commandes', false, false, false, false);
+            // Valeur a modifier pour $jsonOrder (recuperer la commande et l'encoder en json)
+            $jsonOrder = json_encode(['id_order' => $args['id_order']]);
+            $message = new AMQPMessage($jsonOrder);
+            $channel->basic_publish($message, '', 'nouvelles_commandes');
+
             $response->getBody()->write(json_encode(['etat' => 'validee']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         } catch (OrderNotFoundException $e) {
