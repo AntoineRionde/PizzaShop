@@ -1,16 +1,28 @@
 import express from 'express';
+import helmet from "helmet";
+import cors from "cors";
+
 import router from './src/routes/router.mjs';
 
-const app = express();
-const port = process.env.PORT || 3000;
+import catch404errors from "./src/middlewares/catch404errors.js";
+import catchAllErrors from "./src/middlewares/catchAllErrors.js";
 
-app.use(express.json());
+const app = express();
+
+app.use(helmet()); //sécurité
+app.use(cors()); // cors
+app.use(express.json()); //parse les données json
+app.use(express.urlencoded({ extended: false })); //parse les données provenant de formulaire
+
 app.use('/api', router);
 
 app.get('/api/', (req, res) => {
     res.json({'message': 'ok ça roule'});
 })
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+app.use(catch404errors);
+app.use(catchAllErrors);
+
+export default app;
+
+

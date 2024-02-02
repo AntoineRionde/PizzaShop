@@ -1,12 +1,14 @@
 import express from 'express';
-import listerCommandes from "../actions/commandeAction.js";
-
 import CommandeAction from "../actions/commandeAction.js";
-import CommandeService from '../services/commandeService.js'
+import CommandeService from "../services/commandeService.js";
 
 const router = express.Router();
+const service = new CommandeService();
 
-// Utiliser une fonction asynchrone pour charger dynamiquement l'action
-router.get('/commandes', listerCommandes);
+const action = new CommandeAction(service);
 
-export default router; // Utiliser 'export default' pour exporter le module
+router
+    .route("/commandes")
+    .get(action.listerCommandes.bind(action))
+    .all((req, res, next) => next(405));
+export default router;
