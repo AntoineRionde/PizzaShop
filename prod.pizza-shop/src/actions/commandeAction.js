@@ -1,5 +1,3 @@
-import CommandeService from '../services/commandeService.js'
-
 export default class commandeAction {
     #_service;
 
@@ -10,7 +8,6 @@ export default class commandeAction {
     async listerCommandes(req, res, next){
         try {
             const commandes = await this.#_service.getCommandes();
-            console.log(commandes);
             res.json(commandes);
             next();
         } catch (error) {

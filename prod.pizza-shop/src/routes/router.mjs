@@ -11,4 +11,10 @@ router
     .route("/commandes")
     .get(action.listerCommandes.bind(action))
     .all((req, res, next) => next(405));
+
+router
+    .route("/commande/:id/")
+    .patch(action.changerEtatCommande.bind(action))
+    .all((req, res, next) => next(405));
+
 export default router;
