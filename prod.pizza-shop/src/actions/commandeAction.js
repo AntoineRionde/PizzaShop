@@ -18,8 +18,8 @@ export default class commandeAction {
     }
 
     async changerEtatCommande(req, res, next){
-        const { id } = req.params.id;
-        const { nouvelEtape } = req.body.etape;
+        const id = req.params.id;
+        const nouvelEtape = req.body.etape;
 
         try {
             await this.#_service.updateEtatCommande(id, nouvelEtape);
