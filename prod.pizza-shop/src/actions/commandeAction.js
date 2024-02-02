@@ -19,10 +19,10 @@ export default class commandeAction {
 
     async changerEtatCommande(req, res, next){
         const { id } = req.params.id;
-        const { nouvelEtat } = req.body;
+        const { nouvelEtape } = req.body.etape;
 
         try {
-            await this.#_service.updateEtatCommande(id, nouvelEtat);
+            await this.#_service.updateEtatCommande(id, nouvelEtape);
             res.json({ message: 'État de la commande mis à jour avec succès.' });
             next();
         } catch (error) {
