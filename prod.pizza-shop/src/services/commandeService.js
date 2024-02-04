@@ -11,6 +11,10 @@ class CommandeService {
     async updateEtatCommande(commandeId, nouvelEtat){
         await db('commande').where('id', '=', commandeId).update({etape: nouvelEtat});
     }
+
+    async createCommand(commande){
+        await db('commande').insert({client: commande.client, etape: 1});
+    }
 }
 
 export default CommandeService;
