@@ -1,5 +1,6 @@
 import app from "./index.js";
 import CommandePublisher from "./src/rmq/commandePublisher.js";
+import CommandeConsumer from "./src/rmq/commandeConsumer.js";
 
 
 app.listen(process.env.PORT, () => {
@@ -10,5 +11,10 @@ app.listen(process.env.PORT, () => {
     const commandPublisher = new CommandePublisher();
 
     await commandPublisher.publish(1, 'EN PRÉPARATION');
+
+    const commandeConsumer = new CommandeConsumer();
+
+    await commandeConsumer.consume();
+
 })();
 
