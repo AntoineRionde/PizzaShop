@@ -4,7 +4,7 @@ namespace pizzashop\shop\app\actions;
 
 use Slim\Routing\RouteContext;
 
-class HomeAction
+class HomeAction extends AbstractAction
 {
     public function __invoke($request, $response, $args)
     {
