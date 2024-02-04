@@ -5,7 +5,6 @@ use pizzashop\shop\app\actions\AccessOrdersAction;
 use pizzashop\shop\app\actions\GetProductAction;
 use pizzashop\shop\app\actions\GetProductsAction;
 use pizzashop\shop\app\actions\GetProductsByCategoryAction;
-use pizzashop\shop\app\actions\SigninAction;
 use pizzashop\shop\app\actions\AccessOrderAction;
 use pizzashop\shop\app\actions\CreateOrderAction;
 use pizzashop\shop\app\actions\HomeAction;
@@ -38,6 +37,4 @@ return function( App $app):void {
     $app->get('/categorie/{id_category}/product[/]', GetProductsByCategoryAction::class)
         ->setName('get_products_by_categories');
 
-    $app->get("/signin[/]", SigninAction::class)
-        ->setName("signin");
 };
