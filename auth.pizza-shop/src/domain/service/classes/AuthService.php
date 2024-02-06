@@ -9,37 +9,43 @@ use pizzashop\auth\api\domain\exceptions\CredentialsException;
 use pizzashop\auth\api\domain\exceptions\TokenException;
 use pizzashop\auth\api\domain\exceptions\UserException;
 use pizzashop\auth\api\domain\service\interfaces\IAuth;
-use Random\RandomException;
 
 class AuthService implements IAuth
 {
     /**
      * @throws CredentialsException
      */
-    public function verifyCredentials($email, $password)
+    public function verifyCredentials($email, $password): User
     {
-        $user = User::where('email', $email)->first();
-        if ($user && password_verify($password, $user->password)) {
-            return $user;
+        try {
+            $user = User::where('email', $email)->first();
+            if (password_verify($password, $user->password)) {
+                return $user;
+            }
+            throw new CredentialsException();
+        } catch (Exception) {
+            throw new CredentialsException();
         }
-        throw new CredentialsException();
     }
 
     /**
      * @throws TokenException
      */
-    public function verifyRefreshToken($refreshToken) {
-        $user = User::where('refresh_token', $refreshToken)
-            ->where('refresh_token_expiration_date', '>', Carbon::now())
-            ->first();
-        return $user ?: throw new TokenException('Invalid refresh token');
+    public function verifyRefreshToken($refreshToken): User
+    {
+        try {
+            return User::where('refresh_token', $refreshToken)
+                ->where('refresh_token_expiration_date', '>', Carbon::now())
+                ->first();
+        } catch (Exception) {
+            throw new TokenException('Invalid refresh token');
+        }
     }
 
     /**
      * @throws UserException
-     * @throws RandomException
      */
-    public function createUser($username, $email, $password)
+    public function register($username, $email, $password): User
     {
         try {
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -52,38 +58,9 @@ class AuthService implements IAuth
                 'activation_token' => $activationToken,
                 'activation_token_expiration_date' => Carbon::now()->addMinutes(5)->toDateTimeString(),
             ];
-
             return User::create($user);
-        } catch (Exception $e) {
-            throw new UserException("Error during user creation");
-        }
-
-    }
-
-    /**
-     * @throws TokenException
-     */
-    public function verifyActivationToken($activationToken)
-    {
-        $user = User::where('activation_token', $activationToken)
-            ->where('activation_token_expiration_date', '>', Carbon::now())
-            ->first();
-        return $user ?: throw new TokenException('Invalid activation token');
-    }
-
-    /**
-     * @throws UserException
-     */
-    public function activateUserAccount($email)
-    {
-        try {
-            $user = User::find($email);
-            $user->active = 1;
-            $user->activation_token = null;
-            $user->activation_token_expiration_date = null;
-            return $user->save();
         } catch (Exception) {
-            throw new UserException("Error during user activation");
+            throw new UserException("Error during user creation");
         }
     }
 
@@ -93,24 +70,9 @@ class AuthService implements IAuth
     public function getAuthenticatedUserProfile($email): User
     {
         try {
-            return $this->getUserByEmail($email);
+            return User::where('email', $email)->first();
         } catch (Exception) {
             throw new UserException("Error during user profile retrieval");
         }
-    }
-
-    public function getUserByEmail($email)
-    {
-        return User::where('email', $email)->first() ?: null;
-    }
-
-    public function register($username, $email, $password)
-    {
-        // TODO
-    }
-
-    public function activate($refreshToken)
-    {
-        // TODO
     }
 }

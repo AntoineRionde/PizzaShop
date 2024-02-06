@@ -9,8 +9,9 @@ use pizzashop\shop\domain\service\interfaces\ICatalog;
 class CatalogService implements ICatalog
 {
 
-    public function getProduct(int $numero) : ProductDTO {
-        $product = Product::findOrFail($numero);
+    public function getProduct(int $id): ProductDTO
+    {
+        $product = Product::findOrFail($id);
         return $product->toDTO();
     }
 
@@ -24,7 +25,13 @@ class CatalogService implements ICatalog
         return $productsDTO;
     }
 
-    public function getProductsByCategory(int $id_category)
+    public function getProductByNumber(int $number): ProductDTO
+    {
+        $product = Product::where('numero', $number)->first();
+        return $product->toDTO();
+    }
+
+    public function getProductsByCategory(int $id_category): array
     {
         $products = Product::where('categorie_id', $id_category)->get();
         $productsDTO = array();

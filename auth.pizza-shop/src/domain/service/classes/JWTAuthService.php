@@ -26,71 +26,71 @@ class JWTAuthService implements IJWTAuthService
     }
 
     /**
-     * @throws CredentialsException
+     * @throws CredentialsException|TokenException
      */
     public function signIn($email, $password): ?array
     {
         $user = $this->authProvider->verifyCredentials($email, $password);
-        if ($user) {
-            return $this->createTokenPair($user);
-        }
-        return null;
+        return $this->createTokenPair($user);
     }
 
     /**
-     * @throws RandomException
+     * @throws TokenException
      */
     private function createTokenPair(User $user): array
     {
-        $tokenData = ['username' => $user->username, 'email' => $user->email];
-        $accessToken = $this->jwtManager->createToken($tokenData);
-        $refreshToken = $this->jwtManager->createToken(bin2hex(random_bytes(10)));
-        $user->refresh_token = $refreshToken;
-        $user->refresh_token_expiration_date = Carbon::now()->addMinutes($this->tokenLifetime)->toDateTimeString();
-        $user->save();
-        return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+        try {
+            $tokenData = ['username' => $user->username, 'email' => $user->email];
+            $accessToken = $this->jwtManager->createToken($tokenData);
+            $refreshToken = $this->jwtManager->createToken(bin2hex(random_bytes(10)));
+            $user->refresh_token = $refreshToken;
+            $user->refresh_token_expiration_date = Carbon::now()->addMinutes($this->tokenLifetime)->toDateTimeString();
+            $user->save();
+            return ['access_token' => $accessToken, 'refresh_token' => $refreshToken];
+        } catch (RandomException) {
+            throw new TokenException('Error during token creation');
+        }
     }
 
     public function validate($accessToken): ?array
     {
-        return $this->jwtManager->validateToken($accessToken) ?: null;
+        return $this->jwtManager->validateToken($accessToken);
     }
 
     /**
-     * @throws UserException|RandomException
+     * @throws UserException|TokenException
      */
-    public function signup($username, $email, $password): User
+    public function signUp($username, $email, $password): User
     {
-        $user = $this->authProvider->createUser($username, $email, $password);
-        if ($user) {
-            $this->createTokenPair($user);
-            return $this->authProvider->getAuthenticatedUserProfile($user->email);
-        }
-        throw new UserException('Error during user creation');
+        $user = $this->authProvider->register($username, $email, $password);
+        $this->createTokenPair($user);
+        return $this->authProvider->getAuthenticatedUserProfile($user->email);
     }
 
     /**
      * @throws UserException
-     * @throws TokenException
      */
-    public function activate($activationToken): bool
+    public function activate($activationToken): User
     {
-        $user = $this->authProvider->verifyActivationToken($activationToken);
-        if ($user) {
-            return $this->authProvider->activateUserAccount($user->id);
+        try {
+        $email = $activationToken->upr->email;
+        $user = $this->authProvider->getAuthenticatedUserProfile($email);
+        $user->activation_token = null;
+        $user->activation_token_expiration_date = null;
+        $user->active = 1;
+        $user->save();
+        return $user;
+        } catch (UserException) {
+            throw new UserException('Error during user activation');
         }
-        return false;
     }
 
     /**
-     * @throws TokenException|RandomException
+     * @throws TokenException
      */
     public function refresh($refreshToken): ?array
     {
         $user = $this->authProvider->verifyRefreshToken($refreshToken);
-        if ($user) {
-            return $this->createTokenPair($user);
-        }
-        return null;
+        return $this->createTokenPair($user);
     }
 }

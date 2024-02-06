@@ -27,47 +27,51 @@ class OrderService implements IOrder
 
     /**
      * @throws CreationFailedException
+     * @throws OrderRequestInvalidException
      */
     public function createOrder(OrderDTO $orderDTO): OrderDTO
     {
         try {
-            $commandeEntity = new Order();
-            $commandeId = Uuid::uuid4()->toString();
-            $commandeEntity->id = $commandeId;
-            $commandeEntity->date_commande = date('Y-m-d H:i:s');
-            $commandeEntity->etat = Order::ETAT_CREE;
-            $montantTotal = 0;
-            v::in(Order::TYPE_LIVRAISON)->validate($orderDTO->type_livraison) ? $commandeEntity->type_livraison = $orderDTO->type_livraison : throw new OrderRequestInvalidException();
-            v::email()->validate($orderDTO->mail_client) ? $commandeEntity->mail_client = $orderDTO->mail_client : throw new OrderRequestInvalidException();
-            v::arrayType()->validate($orderDTO->items) ?: throw new OrderRequestInvalidException();
+            $orderEntity = new Order();
+            $orderId = Uuid::uuid4()->toString();
+            $orderEntity->id = $orderId;
+            $orderEntity->date_commande = date('Y-m-d H:i:s');
+            $orderEntity->etat = Order::CREATED;
+            $orderEntity->delai = $orderDTO->delay;
 
+            v::in(Order::LIVRAISON_TYPE)->validate($orderDTO->livraisonType) ? $orderEntity->type_livraison = $orderDTO->livraisonType : throw new OrderRequestInvalidException("Livraison type is invalid");
+            v::email()->validate($orderDTO->clientMail) ? $orderEntity->mail_client = $orderDTO->clientMail : throw new OrderRequestInvalidException("Email is invalid");
+            v::arrayType()->validate($orderDTO->items) ?: throw new OrderRequestInvalidException("Items should be an array");
+
+            $totalAmount = 0;
             foreach ($orderDTO->items as $item) {
-                $product = $this->catalogService->getProduct($item->numero);
-
                 $itemEntity = new Item();
-                $itemEntity->id = $product->id;
-                $itemEntity->libelle = $product->libelle;
-                $itemEntity->libelle_taille = $item->taille == 1 ? 'normale' : 'grande';
-                $itemEntity->commande_id = $commandeId;
+                v::positive()->validate($item->number) ? $itemEntity->taille = $item->size : throw new OrderRequestInvalidException("Size is invalid");
+                v::positive()->validate($item->number) ? $itemEntity->numero = $item->number : throw new OrderRequestInvalidException("Product number is invalid");
+                v::positive()->validate($item->quantity) ? $itemEntity->quantite = $item->quantity : throw new OrderRequestInvalidException("Quantity is invalid");
 
-                v::positive()->validate($item->taille) ? $itemEntity->taille = $item->taille : throw new OrderRequestInvalidException();
-                v::positive()->validate($item->numero) ? $itemEntity->numero = $item->numero : throw new OrderRequestInvalidException();
-                v::positive()->validate($product->quantite) ? $itemEntity->quantite = $item->quantite : throw new OrderRequestInvalidException();
+                $product = $this->catalogService->getProductByNumber($item->number);
+
+                $itemEntity->libelle_taille = $item->size === 1 ? "normale" : "grande";
+                $itemEntity->tarif = $product->prices->{$itemEntity->libelle_taille};
+                $itemEntity->libelle = $product->label;
+
+                $itemEntity->commande_id = $orderId;
 
                 $this->logger->info('Item créé', $itemEntity->toDTO()->toArray());
                 $itemEntity->save();
-
-                $montantTotal += $product->prix * $item->quantite;
+                $totalAmount += $itemEntity->tarif * $item->quantity;
             }
 
-            $commandeEntity->montant_total = $montantTotal;
-            $commandeDTO = $commandeEntity->toDTO();
-            $commandeDTO->items = $orderDTO->items;
-            $this->logger->info('Commande créée', $commandeDTO->toArray());
-            $commandeEntity->save();
-            return $commandeDTO;
+            $orderEntity->montant_total = $totalAmount;
+            $orderDTO = $orderEntity->toDTO();
+            $this->logger->info('Commande créée', $orderDTO->toArray());
 
-        } catch (Exception $e) {
+            $orderEntity->save();
+            return $orderDTO;
+        } catch (OrderRequestInvalidException $e) {
+            throw new OrderRequestInvalidException($e->getMessage());
+        } catch (Exception) {
             throw new CreationFailedException();
         }
     }
@@ -104,17 +108,16 @@ class OrderService implements IOrder
     {
         try {
             $commandeEntity = Order::findOrFail($id);
-            if ($commandeEntity->etat !== Order::ETAT_CREE) {
-                throw new OrderRequestInvalidException();
+            if ($commandeEntity->etat !== Order::CREATED) {
+                throw new OrderRequestInvalidException("Order is not in CREATED state.");
             }
-            $commandeEntity->etat = Order::ETAT_VALIDE;
+            $commandeEntity->etat = Order::VALIDATED;
+            $commandeEntity->save();
             return $commandeEntity->toDTO();
         } catch (OrderRequestInvalidException $e) {
-            throw new OrderRequestInvalidException();
-        } catch (Exception $e) {
+            throw new OrderRequestInvalidException($e->getMessage());
+        } catch (Exception) {
             throw new OrderNotFoundException();
         }
     }
-
-
 }
