@@ -5,39 +5,36 @@ namespace pizzashop\shop\domain\dto\item;
 class ItemDTO
 {
 
-    public int $id;
-    public int $numero;
-    public string $libelle;
-    public int $taille;
-    public string $libelle_taille;
-    public float $tarif;
+    public int $number;
+    public string $label;
+    public int $size;
+    public string $labelSize;
+    public float $price;
 
-    public int $quantite;
-    public string $commande_id;
+    public int $quantity;
+    public string $orderId;
 
-    public function __construct(int $id, int $numero, string $libelle, int $taille, string $libelle_taille, float $tarif, int $quantite, string $commande_id)
+    public function __construct(int $number, string $label, int $size, string $labelSize, float $price, int $quantity, string $orderId)
     {
-        $this->id = $id;
-        $this->numero = $numero;
-        $this->libelle = $libelle;
-        $this->taille = $taille;
-        $this->libelle_taille = $libelle_taille;
-        $this->tarif = $tarif;
-        $this->quantite = $quantite;
-        $this->commande_id = $commande_id;
+        $this->number = $number;
+        $this->label = $label;
+        $this->size = $size;
+        $this->labelSize = $labelSize;
+        $this->price = $price;
+        $this->quantity = $quantity;
+        $this->orderId = $orderId;
     }
 
     public function toArray()
     {
         return [
-            'id' => $this->id,
-            'numero' => $this->numero,
-            'libelle' => $this->libelle,
-            'taille' => $this->taille,
-            'libelle_taille' => $this->libelle_taille,
-            'tarif' => $this->tarif,
-            'quantite' => $this->quantite,
-            'commande_id' => $this->commande_id,
+            'number' => $this->number,
+            'label' => $this->label,
+            'size' => $this->size,
+            'labelSize' => $this->labelSize,
+            'price' => $this->price,
+            'quantity' => $this->quantity,
+            'orderId' => $this->orderId
         ];
     }
 

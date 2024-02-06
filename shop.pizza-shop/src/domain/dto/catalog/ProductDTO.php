@@ -11,21 +11,22 @@ class ProductDTO extends DTO
     public string $label;
     public string $category_label;
     public string $label_size;
-    public $price;
+    public object $prices;
 
     public string $href = '';
 
-    public function __construct(int $number, string $label, string $category_label, string $label_size, $price)
+    public function __construct(int $number, string $label, string $category_label, string $label_size, object $prices)
     {
         $this->number = $number;
         $this->label = $label;
         $this->category_label = $category_label;
         $this->label_size = $label_size;
-        $this->price = $price;
+        $this->prices = $prices;
     }
 
-    public function simplifyDto($baseUrl){
-        unset($this->price);
+    public function simplifyDto($baseUrl)
+    {
+        unset($this->prices);
         unset($this->label_size);
         unset($this->category_label);
         $this->href = $baseUrl . '/product/' . $this->number;

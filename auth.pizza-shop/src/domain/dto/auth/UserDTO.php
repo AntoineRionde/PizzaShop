@@ -29,8 +29,9 @@ class UserDTO
         $this->username = $username;
     }
 
-    public function toArray() {
-    return [
+    public function toArray()
+    {
+        return [
             'email' => $this->email,
             'password' => $this->password,
             'active' => $this->active,
