@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
 
+    public $timestamps = false;
     protected $connection = 'catalog';
     protected $table = 'categorie';
     protected $primaryKey = 'id';
-    public $timestamps = false;
-    protected $fillable = [ 'libelle'];
+    protected $fillable = ['libelle'];
 
     public function products()
     {

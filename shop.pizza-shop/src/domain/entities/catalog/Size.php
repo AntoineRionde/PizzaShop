@@ -9,12 +9,11 @@ class Size extends Model
 
     const NORMAL = 1;
     const TALL = 2;
-	
+    public $timestamps = false;
     protected $connection = 'catalog';
     protected $table = 'taille';
     protected $primaryKey = 'id';
-    public $timestamps = false;
-    protected $fillable = [ 'libelle'];
+    protected $fillable = ['libelle'];
 
     public function products()
     {

@@ -6,15 +6,16 @@ use Illuminate\database\eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use pizzashop\shop\domain\dto\catalog\ProductDTO;
+use stdClass;
 
 class Product extends Model
 {
 
+    public $timestamps = false;
     protected $connection = 'catalog';
     protected $table = 'produit';
     protected $primaryKey = 'id';
-    public $timestamps = false;
-    protected $fillable = ['numero', 'libelle', 'description','image'];
+    protected $fillable = ['numero', 'libelle', 'description', 'image'];
 
     public function category(): BelongsTo
     {
@@ -27,7 +28,12 @@ class Product extends Model
             ->withPivot('tarif');
     }
 
-    public function toDTO(){
-        return new ProductDTO($this->numero, $this->libelle, $this->description, $this->image, $this->sizes()->get());
+    public function toDTO()
+    {
+        $tarifs = new stdClass();
+        foreach ($this->sizes as $size) {
+            $tarifs->{$size->libelle} = $size->pivot->tarif;
+        }
+        return new ProductDTO($this->numero, $this->libelle, $this->description, $this->image, $tarifs);
     }
 }
