@@ -4,19 +4,30 @@ namespace pizzashop\shop\app\actions;
 
 use Exception;
 use pizzashop\shop\domain\service\classes\OrderService;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Routing\RouteContext;
+use Psr\Container\NotFoundExceptionInterface;
+use Slim\Psr7\Message;
+use Slim\Psr7\Response;
 
 class AccessOrderAction extends AbstractAction
 {
     private OrderService $os;
 
+
+    /**
+     * @throws Exception
+     */
     public function __construct(ContainerInterface $container)
     {
-        $this->os = $container->get('order.service');
+        try {
+            $this->os = $container->get('order.service');
+        } catch (Exception|NotFoundExceptionInterface|ContainerExceptionInterface) {
+            throw new Exception('Internal server error, please try again later.');
+        }
     }
 
-    public function __invoke($request, $response, $args)
+    public function __invoke($request, $response, $args): Response|Message
     {
         $response = $this->addCorsHeaders($response);
 
@@ -28,7 +39,7 @@ class AccessOrderAction extends AbstractAction
                     "href" => "/commandes/" . $args['id_order'] . "/"
                 ),
                 "valider" => array(
-                    "href" => "/commandes/" . $args['id_order']
+                    "href" => "/commandes/" . $args['id_order'] . "/"
                 )
             );
 

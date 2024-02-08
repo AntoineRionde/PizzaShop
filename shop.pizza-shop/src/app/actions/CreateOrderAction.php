@@ -3,11 +3,15 @@
 namespace pizzashop\shop\app\actions;
 
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use InvalidArgumentException;
 use pizzashop\shop\domain\dto\order\OrderDTO;
-use pizzashop\shop\domain\exception\InternalServerException;
-use pizzashop\shop\domain\exception\OrderRequestInvalidException;
+use pizzashop\shop\domain\exception\CreationFailedException;
 use pizzashop\shop\domain\service\classes\OrderService;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Routing\RouteContext;
@@ -16,9 +20,20 @@ class CreateOrderAction extends AbstractAction
 {
 
     private OrderService $os;
+    private Client $authGuzzle;
+
+    /**
+     * @throws Exception
+     */
     public function __construct(ContainerInterface $container)
     {
-        $this->os = $container->get('order.service');
+        try {
+            $this->os = $container->get('order.service');
+
+            $this->authGuzzle = $container->get('auth.guzzle');
+        } catch (Exception|NotFoundExceptionInterface|ContainerExceptionInterface) {
+            throw new Exception('Internal server error, please try again later.');
+        }
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
@@ -30,43 +45,37 @@ class CreateOrderAction extends AbstractAction
             if ($request->getMethod() !== 'POST') {
                 return $response->withHeader('Location', '/')->withStatus(302);
             }
-            $token = $request->getHeader('Authorization')[0];
-            if (empty($token)) {
+
+            if (!$request->getHeader('Authorization')) {
                 $response->getBody()->write(json_encode(['error' => 'Token absent']));
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-            } else
-            {
-                $client = new Client([
-                    'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:16584',
-                    'timeout' => 2.0,
-                ]);
+            }
+            $resp = $this->authGuzzle->request('GET', '/api/users/validate', [
+                'headers' => [
+                    'Authorization' => $request->getHeader('Authorization')[0],
+                ]
+            ]);
 
-                try {
-                    $response = $client->request('POST', '/api/users/validate', [
-                        'json' => [
-                            'token' => $token
-                        ]
-                    ]);
-                } catch (Exception $e) {
-                    $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
-                    return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
-                }
+            if ($resp->getStatusCode() !== 200) {
+                $response->getBody()->write($response->getBody());
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
             }
 
-            $orderDTO = $this->orderDTO->fromArray($request->getParsedBody());
+            $orderDTO = OrderDTO::fromArray($request->getParsedBody());
             $order = $this->os->createOrder($orderDTO);
             $response->getBody()->write(json_encode($order));
 
             $routeContext = RouteContext::fromRequest($request);
-            $url = $routeContext->getRouteParser()->urlFor('accessOrder', ['id_order' => $order->id]);
+            $url = $routeContext->getRouteParser()->urlFor('access_order', ['id_order' => $order->id]);
+            return $response->withHeader('Location', $url)->withHeader('Content-Type', 'application/json')->withStatus(201);
 
-
-            return $response->withHeader('Location', $url)->withStatus(201);
-
-        } catch (OrderRequestInvalidException $e) {
+        } catch (GuzzleException $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+        } catch (CreationFailedException|InvalidArgumentException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
-        } catch (InternalServerException $e) {
+        } catch (Exception $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }

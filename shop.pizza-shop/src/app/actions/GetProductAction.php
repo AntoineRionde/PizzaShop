@@ -4,7 +4,10 @@ namespace pizzashop\shop\app\actions;
 
 use Exception;
 use pizzashop\shop\domain\service\classes\CatalogService;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Slim\Psr7\Message;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
@@ -13,13 +16,20 @@ class GetProductAction extends AbstractAction
 
     private CatalogService $cs;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(ContainerInterface $container)
     {
-        $this->cs = $container->get('catalog.service');
+        try {
+            $this->cs = $container->get('catalog.service');
+        } catch (Exception|NotFoundExceptionInterface|ContainerExceptionInterface) {
+            throw new Exception('Internal server error, please try again later.');
+        }
     }
 
 
-    public function __invoke(Request $request, Response $response, array $args)
+    public function __invoke(Request $request, Response $response, array $args): Response|Message
     {
         $response = $this->addCorsHeaders($response);
 
