@@ -15,6 +15,7 @@ services:
     volumes:
       - ../shop.pizza-shop/public:/var/www/html
       - ../shop.pizza-shop:/var/www
+      - ../shop.pizza-shop/logs:/var/www/logs
     working_dir: /var/www/
     networks:
       pizza-shop.net:
@@ -23,6 +24,8 @@ services:
     depends_on:
       - pizza-shop.commande.db
       - pizza-shop.catalogue.db
+    command: >
+      bash -c "composer install && composer update && apache2-foreground && chmod 777 /var/www/logs"
 
 
 
@@ -102,24 +105,24 @@ services:
       - ../auth.pizza-shop/sql:/docker-entrypoint-initdb.d
 
   gateway.pizza-shop:
-      image: 'canals/php:8.2'
-      env_file: ./gate.env
-      ports:
-        - '2081:80'  # 40505
-        - '1445:443' # 40510
-      volumes:
-        - ../gateway.pizza-shop:/var/www
-        - ../gateway.pizza-shop/public:/var/www/html
-      working_dir: /var/www/
-      networks:
-        pizza-shop.net:
-          aliases:
-            - api.pizza-shop.local
-      depends_on:
-        - api.pizza-shop
-        - api.pizza-auth
-      command: >
-        bash -c "composer install && composer update && apache2-foreground"
+    image: 'canals/php:8.2'
+    env_file: ./gate.env
+    ports:
+      - '2081:80'  # 40505
+      - '1445:443' # 40510
+    volumes:
+      - ../gateway.pizza-shop:/var/www
+      - ../gateway.pizza-shop/public:/var/www/html
+    working_dir: /var/www/
+    networks:
+      pizza-shop.net:
+        aliases:
+          - api.pizza-shop.local
+    depends_on:
+      - api.pizza-shop
+      - api.pizza-auth
+    command: >
+      bash -c "composer install && composer update && apache2-foreground"
 
   rabbitmq:
     image: rabbitmq:3-management
