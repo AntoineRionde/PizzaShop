@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
+use pizzashop\shop\app\actions\AccessOrderAction;
 use pizzashop\shop\app\actions\AccessOrdersAction;
+use pizzashop\shop\app\actions\CreateOrderAction;
 use pizzashop\shop\app\actions\GetProductAction;
 use pizzashop\shop\app\actions\GetProductsAction;
 use pizzashop\shop\app\actions\GetProductsByCategoryAction;
-use pizzashop\shop\app\actions\AccessOrderAction;
-use pizzashop\shop\app\actions\CreateOrderAction;
 use pizzashop\shop\app\actions\HomeAction;
 use pizzashop\shop\app\actions\ValidateOrderAction;
 use Slim\App;
 
-return function( App $app):void {
+return function (App $app): void {
 
     $app->get('/', HomeAction::class)
         ->setName('home');

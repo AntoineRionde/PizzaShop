@@ -1,5 +1,7 @@
 <?php
+
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 $exchange_name = 'pizzashop';

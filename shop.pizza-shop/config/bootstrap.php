@@ -1,12 +1,12 @@
 <?php
 
 use DI\ContainerBuilder;
-use Slim\Factory\AppFactory;
 use Illuminate\Database\Capsule\Manager as Eloquent;
+use Slim\Factory\AppFactory;
 
 $settings = require_once __DIR__ . '/settings.php';
-$services = require_once __DIR__.'/services_dependencies.php';
-$actions= require_once __DIR__.'/actions_dependencies.php';
+$services = require_once __DIR__ . '/services_dependencies.php';
+$actions = require_once __DIR__ . '/actions_dependencies.php';
 
 $eloquent = new Eloquent();
 $eloquent->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'), 'catalog');
