@@ -3,6 +3,7 @@
 namespace pizzashop\shop\domain\exception;
 
 use Exception;
+use Throwable;
 
 class OrderRequestInvalidException extends Exception
 {
