@@ -2,7 +2,6 @@
 
 namespace pizzashop\gateway\app\actions;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;

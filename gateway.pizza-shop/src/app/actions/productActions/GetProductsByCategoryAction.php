@@ -18,12 +18,13 @@ class GetProductsByCategoryAction extends AbstractAction
         parent::__construct($container);
 
     }
+
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         $response = $this->addCorsHeaders($response);
 
         try {
-            $productData = $this->sendGetRequest('http://api.pizza-shop:80/categorie/' . $args['id_category'].'/product/');
+            $productData = $this->sendGetRequest('http://api.pizza-shop:80/categorie/' . $args['id_category'] . '/product/');
 
             $products_json = json_encode($productData);
             $response->getBody()->write($products_json);
@@ -32,7 +33,7 @@ class GetProductsByCategoryAction extends AbstractAction
         } catch (RequestException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getResponse()->getStatusCode());
-        } catch (Exception | GuzzleException $e) {
+        } catch (Exception|GuzzleException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }

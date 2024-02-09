@@ -27,13 +27,13 @@ class RefreshTokenAction extends AbstractAction
         $response = $this->addCorsHeaders($response);
 
         try {
-            if (!isset($request->getHeader('Authorization')[0])){
+            if (!isset($request->getHeader('Authorization')[0])) {
                 throw new Exception('No token provided');
             }
             $h = $request->getHeader('Authorization')[0];
             $refreshToken = sscanf($h, "Bearer %s")[0];
 
-            $credentialsData = $this->sendPostRequest('http://api.pizza-auth:80/api/users/refresh',['Authorization' => 'Bearer ' . $refreshToken], []);
+            $credentialsData = $this->sendPostRequest('http://api.pizza-auth:80/api/users/refresh', ['Authorization' => 'Bearer ' . $refreshToken], []);
 
             $credentials_json = json_encode($credentialsData);
             $response->getBody()->write($credentials_json);
@@ -42,7 +42,7 @@ class RefreshTokenAction extends AbstractAction
         } catch (RequestException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getResponse()->getStatusCode());
-        } catch (Exception | GuzzleException $e) {
+        } catch (Exception|GuzzleException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }

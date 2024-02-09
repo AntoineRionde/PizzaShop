@@ -35,7 +35,7 @@ class SignInAction extends AbstractAction
             $h = $request->getHeader('Authorization')[0];
             $tokenstring = sscanf($h, "Basic %s")[0];
 
-            $credentialsData = $this->sendPostRequest('http://api.pizza-auth:80/api/users/signin',['Authorization' => 'Basic ' . $tokenstring]);
+            $credentialsData = $this->sendPostRequest('http://api.pizza-auth:80/api/users/signin', ['Authorization' => 'Basic ' . $tokenstring]);
 
             $credentials_json = json_encode($credentialsData);
             $response->getBody()->write($credentials_json);
@@ -44,7 +44,7 @@ class SignInAction extends AbstractAction
         } catch (RequestException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getResponse()->getStatusCode());
-        } catch (Exception | GuzzleException $e) {
+        } catch (Exception|GuzzleException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }

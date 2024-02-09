@@ -2,10 +2,8 @@
 
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
-use Illuminate\Database\Capsule\Manager as Eloquent;
 
 $settings = require_once __DIR__ . '/settings.php';
-
 
 
 $builder = new ContainerBuilder();

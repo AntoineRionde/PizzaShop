@@ -31,7 +31,7 @@ class GetProductAction extends AbstractAction
         } catch (RequestException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus($e->getResponse()->getStatusCode());
-        } catch (Exception | GuzzleException $e) {
+        } catch (Exception|GuzzleException $e) {
             $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
