@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\gateway\app\action;
+namespace pizzashop\gateway\app\actions;
 
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;

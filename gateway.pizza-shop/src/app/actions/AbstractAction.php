@@ -1,11 +1,10 @@
 <?php
 
-namespace pizzashop\gateway\app\action;
+namespace pizzashop\gateway\app\actions;
 
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Psr\Container\ContainerInterface;
 use Slim\Psr7\Request;
@@ -34,21 +33,32 @@ abstract class AbstractAction
     /**
      * @throws GuzzleException
      */
-    protected function sendGetRequest(string $url): array
+    protected function sendGetRequest(string $url, array $headers = []): array
     {
-        $response = $this->httpClient->get($url);
+        $response = $this->httpClient->get($url, [
+            RequestOptions::HEADERS => $headers
+        ]);
         return json_decode($response->getBody(), true);
     }
 
     /**
      * @throws GuzzleException
      */
-    protected function sendPostRequest(string $url, array $data): array
+    protected function sendPostRequest(string $url, array $headers = [], array $data = [],): array
     {
         $response = $this->httpClient->post($url, [
-            'json' => $data,
+            RequestOptions::HEADERS => $headers,
+            RequestOptions::FORM_PARAMS => $data
         ]);
+        return json_decode($response->getBody(), true);
+    }
 
+    /**
+     * @throws GuzzleException
+     */
+    protected function sendPatchRequest(string $url): array
+    {
+        $response = $this->httpClient->patch($url);
         return json_decode($response->getBody(), true);
     }
 
