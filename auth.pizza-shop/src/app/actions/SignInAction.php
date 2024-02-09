@@ -12,7 +12,7 @@ use Slim\Psr7\Message;
 use Slim\Psr7\Response;
 
 
-class SigninAction extends AbstractAction
+class SignInAction extends AbstractAction
 {
 
     private JWTAuthService $JWTAuthService;
@@ -31,6 +31,8 @@ class SigninAction extends AbstractAction
 
     public function __invoke($request, $response, $args): Response|Message
     {
+        $this->addCorsHeaders($response);
+
         if (!isset($request->getHeader('Authorization')[0])) {
             $response->getBody()->write(json_encode(['error' => 'Credentials not provided']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(401);

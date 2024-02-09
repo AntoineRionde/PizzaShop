@@ -5,6 +5,7 @@ namespace pizzashop\auth\api\app\actions;
 use Exception;
 use pizzashop\auth\api\domain\exceptions\TokenException;
 use pizzashop\auth\api\domain\service\classes\JWTAuthService;
+use pizzashop\gateway\app\actions\AbstractAction;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -20,6 +21,7 @@ class RefreshTokenAction extends AbstractAction
      */
     public function __construct(ContainerInterface $container)
     {
+        parent::__construct($container);
         try {
             $this->jwtAuthService = $container->get('jwtauth.service');
         } catch (Exception|NotFoundExceptionInterface|ContainerExceptionInterface) {
@@ -29,8 +31,9 @@ class RefreshTokenAction extends AbstractAction
 
     public function __invoke($request, $response, $args): Response|Message
     {
+        $this->addCorsHeaders($response);
+
         try {
-            $this->addCorsHeaders($response);
             $h = $request->getHeader('Authorization')[0];
             $refreshToken = sscanf($h, "Bearer %s")[0];
             $newTokens = $this->jwtAuthService->refresh($refreshToken);

@@ -60,7 +60,9 @@ class CreateOrderAction extends AbstractAction
                 $response->getBody()->write($response->getBody());
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
             }
-
+            if (!$request->getParsedBody()) {
+                throw new InvalidArgumentException('No data provided');
+            }
             $orderDTO = OrderDTO::fromArray($request->getParsedBody());
             $order = $this->os->createOrder($orderDTO);
             $response->getBody()->write(json_encode($order));

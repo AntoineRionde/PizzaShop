@@ -18,9 +18,9 @@ class AuthService implements IAuth
     public function verifyCredentials($email, $password): User
     {
         try {
-            $user = User::where('email', $email)->first();
+            $user = User::where('email', $email)->first() ?? throw new CredentialsException();
             if (password_verify($password, $user->password)) {
-                return $user;
+                return $user ?? throw new CredentialsException();
             }
             throw new CredentialsException();
         } catch (Exception) {
@@ -36,7 +36,7 @@ class AuthService implements IAuth
         try {
             return User::where('refresh_token', $refreshToken)
                 ->where('refresh_token_expiration_date', '>', Carbon::now())
-                ->first();
+                ->first() ?? throw new TokenException('Invalid refresh token');
         } catch (Exception) {
             throw new TokenException('Invalid refresh token');
         }
@@ -58,7 +58,7 @@ class AuthService implements IAuth
                 'activation_token' => $activationToken,
                 'activation_token_expiration_date' => Carbon::now()->addMinutes(5)->toDateTimeString(),
             ];
-            return User::create($user);
+            return User::create($user) ?? throw new UserException("Error during user creation");
         } catch (Exception) {
             throw new UserException("Error during user creation");
         }
@@ -70,7 +70,7 @@ class AuthService implements IAuth
     public function getAuthenticatedUserProfile($email): User
     {
         try {
-            return User::where('email', $email)->first();
+            return User::where('email', $email)->first() ?? throw new UserException("Error during user profile retrieval");
         } catch (Exception) {
             throw new UserException("Error during user profile retrieval");
         }

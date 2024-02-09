@@ -29,6 +29,8 @@ class ValidateTokenAction extends AbstractAction
 
     public function __invoke($request, $response, $args): Response|Message
     {
+        $this->addCorsHeaders($response);
+
         try {
             $h = $request->getHeader('Authorization')[0];
             $tokenstring = sscanf($h, "Bearer %s")[0];
