@@ -8,6 +8,7 @@ $connection = null;
 try {
     $connection = new AMQPStreamConnection('rabbitmq', 5672, 'admin', '@admin1#!');
 } catch (Exception $e) {
+    echo $e->getMessage();
 }
 
 $message_queue = 'nouvelles_commandes';
@@ -31,4 +32,5 @@ $channel->close();
 try {
     $connection->close();
 } catch (Exception $e) {
+    echo $e->getMessage();
 }

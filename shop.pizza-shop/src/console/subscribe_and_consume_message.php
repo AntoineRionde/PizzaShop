@@ -8,6 +8,7 @@ $connection = null;
 try {
     $connection = new AMQPStreamConnection('rabbitmq', 5672, 'admin', '@admin1#!');
 } catch (Exception $e) {
+    echo $e->getMessage();
 }
 
 $message_queue = 'nouvelles_commandes';
@@ -26,10 +27,11 @@ $msg = $channel->basic_consume($message_queue, '', false, false, false, false, $
 try {
     $channel->consume();
 } catch (Exception $e) {
-    print $e->getMessage();
+    echo $e->getMessage();
 }
 $channel->close();
 try {
     $connection->close();
 } catch (Exception $e) {
+    echo $e->getMessage();
 }

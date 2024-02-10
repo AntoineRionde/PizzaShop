@@ -3,7 +3,8 @@
 namespace pizzashop\shop\app\actions;
 
 use Exception;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Channel\AbstractChannel;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use pizzashop\shop\domain\exception\OrderNotFoundException;
 use pizzashop\shop\domain\exception\OrderRequestInvalidException;
@@ -17,6 +18,7 @@ use Slim\Psr7\Response;
 class ValidateOrderAction extends AbstractAction
 {
     private OrderService $os;
+    private AbstractChannel|AMQPChannel $amqp;
 
     /**
      * @throws Exception
@@ -25,6 +27,7 @@ class ValidateOrderAction extends AbstractAction
     {
         try {
             $this->os = $container->get('order.service');
+            $this->amqp = $container->get('amqp');
         } catch (Exception|NotFoundExceptionInterface|ContainerExceptionInterface) {
             throw new Exception('Internal server error, please try again later.');
         }
@@ -44,13 +47,14 @@ class ValidateOrderAction extends AbstractAction
                     "href" => "/commandes/" . $args['id_order']
                 )
             );
-            $connection = new AMQPStreamConnection('rabbitmq', 5672, 'admin', '@admin1#!');
-            $channel = $connection->channel();
 
-            $channel->queue_declare('nouvelles_commandes', false, false, false, false);
             $jsonOrder = json_encode($orderDTO->toArray());
+
+            $message_queue = 'nouvelles_commandes';
             $message = new AMQPMessage($jsonOrder);
-            $channel->basic_publish($message, '', 'nouvelles_commandes');
+
+            $this->amqp->queue_declare($message_queue, false, true, false, false);
+            $this->amqp->basic_publish($message, '', $message_queue);
 
             $orderReturn = $orderDTO->toArray() + $links;
 
