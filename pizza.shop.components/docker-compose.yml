@@ -25,7 +25,8 @@ services:
       - pizza-shop.commande.db
       - pizza-shop.catalogue.db
     command: >
-      bash -c "composer install && composer update && apache2-foreground && chmod 777 /var/www/logs"
+      bash -c "composer install && composer update && apache2-foreground 
+      && chmod 777 /var/www/logs"
 
 
 
@@ -147,8 +148,6 @@ services:
       - ../prod.pizza-shop/sql:/var/sql
       - ../prod.pizza-shop/sql:/docker-entrypoint-initdb.d
 
-
-
   api.prod.pizza-shop:
     image: node:alpine
     networks:
@@ -165,3 +164,28 @@ services:
     depends_on:
       - pizza-shop.prod.db
 
+  websocket.pizza-shop:
+    image: node:alpine
+    networks:
+      - pizza-shop.net
+    working_dir: /usr/app
+    command: sh -c "npm i && npm run dev" #for development only
+    #command: sh -c "npm i && npm start" #for production only
+    volumes:
+      - ../websocket.pizza-shop:/usr/app
+    ports:
+      - '3334:3000'
+    env_file:
+      - websocket.env
+    depends_on:
+      - rabbitmq
+
+  websocket.front-end:
+    image: php:apache
+    networks:
+      - pizza-shop.net
+    working_dir: /var/www/html
+    volumes:
+      - ../websocket.front-end:/var/www/html
+    ports:
+      - '3335:80'

@@ -50,7 +50,7 @@ class ValidateOrderAction extends AbstractAction
 
             $jsonOrder = json_encode($orderDTO->toArray());
 
-            $message_queue = 'nouvelles_commandes';
+            $message_queue = 'suivi_commandes';
             $message = new AMQPMessage($jsonOrder);
 
             $this->amqp->queue_declare($message_queue, false, true, false, false);
