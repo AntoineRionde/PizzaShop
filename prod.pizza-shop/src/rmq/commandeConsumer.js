@@ -1,12 +1,13 @@
 import knex from "knex";
 import knexConfig from '../configs/db.config.js';
-import amqp from "amqplib";
+import amqp from 'amqplib';
 import CommandeService from '../services/commandeService.js';
 const db = knex(knexConfig);
 
-const consumerTag = process.env.CONSUMER_TAG;
-const amqp_url = process.env.AMQP_URL;
-const queue = process.env.QUEUE;
+const consumerTag = 'nouvelles_commandes';
+// const amqp_url = process.env.AMQP_URL ;
+const amqp_url = 'amqp://admin:admin1@localhost:5672';
+const queue = 'suivi_commandes';
 
 class CommandeConsumer {
     constructor() {

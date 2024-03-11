@@ -7,6 +7,8 @@ import router from './src/routes/router.mjs';
 import catch404errors from "./src/middlewares/catch404errors.js";
 import catchAllErrors from "./src/middlewares/catchAllErrors.js";
 
+import amqp from "amqplib";
+
 const app = express();
 
 app.use(helmet()); //sécurité
