@@ -1,7 +1,7 @@
 import { WebSocketServer } from 'ws';
 import consumeMQ from "./src/consumeMQ.js";
 
-const AMQP_URL = 'amqp://admin:' + encodeURIComponent('@admin1#!') + '@rabbitmq:5672';
+const AMQP_URL = 'amqp://admin:' + encodeURIComponent('admin1') + '@rabbitmq:5672';
 
 const QUEUE = process.env.QUEUE || 'suivi_commandes';
 const CONSUMER_TAG =  process.env.CONSUMER_TAG || 'ws';
